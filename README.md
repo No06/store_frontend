@@ -1,6 +1,6 @@
 # javaweb_training
 
-This template should help get you started developing with Vue 3 in Vite.
+[store](https://github.com/No06/store) 的前端，使用Vue3 + Vuetify打造
 
 ## Recommended IDE Setup
 
