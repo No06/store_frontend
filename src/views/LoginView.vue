@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useField, useForm } from 'vee-validate'
+import { useRouter } from 'vue-router';
 
 const loading = ref(false)
 const isWarning = ref(false)
@@ -21,8 +22,10 @@ const { handleSubmit } = useForm({
     }
   },
 })
+
 const username = useField('username')
 const password = useField('password')
+const router = useRouter()
 
 const login = handleSubmit((values: any) => {
   isWarning.value = false
@@ -35,7 +38,10 @@ const login = handleSubmit((values: any) => {
   })
   .then(resp => {
     if (resp.status == 200) {
-      alert("success")
+      router.push('/')
+    } else {
+      isWarning.value = true
+      warningMsg.value = resp.data
     }
   })
   .catch((e) => {
