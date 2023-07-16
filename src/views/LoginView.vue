@@ -31,13 +31,15 @@ const login = handleSubmit((values: any) => {
   isWarning.value = false
   isError.value = false;
   loading.value = true;
-  axios.post("http://localhost:8080/login", JSON.stringify(values), {
+  axios.post("http://localhost:8080/auth/login", JSON.stringify(values), {
     headers: {
       'Content-Type': 'application/json'
     }
   })
   .then(resp => {
     if (resp.status == 200) {
+      console.log(resp.data)
+      localStorage.setItem('token', resp.data);
       router.push('/')
     } else {
       isWarning.value = true
