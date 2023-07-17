@@ -38,7 +38,6 @@ const login = handleSubmit((values: any) => {
   })
   .then(resp => {
     if (resp.status == 200) {
-      console.log(resp.data)
       localStorage.setItem('token', resp.data);
       router.push('/')
     } else {

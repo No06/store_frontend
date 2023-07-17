@@ -25,7 +25,7 @@ const items = [
         <p class="headline text-uppercase text-h4">store</p>
         <v-spacer/>
         <div class="d-flex flex-row-reverse">
-            <v-btn v-if="token != null" class="button bg-primary text-none" prepend-icon="mdi-account" rounded>
+            <v-btn v-if="token != null" class="button bg-primary text-none" size="large" prepend-icon="mdi-account" rounded>
                 {{ jwt_decode<any>(token).username }}
 
                 <v-menu activator="parent">
@@ -41,7 +41,8 @@ const items = [
                     </v-list>
                 </v-menu>
             </v-btn>
-            <v-btn v-else class="button elevation-3" rounded @click="router.push('/login')">
+            
+            <v-btn v-else class="button elevation-3" size="large" rounded @click="router.push('/login')">
                 登录
             </v-btn>
         </div>
@@ -80,10 +81,9 @@ const items = [
     }
 
     .button {
-        height: auto;
         font-family: 'Noto Sans SC';
         font-weight: 600;
-        padding: 10px 30px;
+        padding: 0 30px;
         font-size: 18px;
         letter-spacing: 2px;
     }
