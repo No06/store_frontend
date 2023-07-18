@@ -1,10 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import jwt_decode from 'jwt-decode';
 
+import { useTokenStore } from '@/stores/token';
+
 const router = useRouter()
 
-const token = localStorage.getItem('token')
+const tokenStore = useTokenStore()
+const token = tokenStore.token
 const items = [
     {
         title: "账号",
@@ -13,7 +16,7 @@ const items = [
     {
         title: "注销",
         onClicked: () => {
-            localStorage.removeItem("token");
+            tokenStore.remove();
             router.push("/login");
         }
     }
@@ -22,8 +25,10 @@ const items = [
 
 <template>
     <div class="appbar w-100 bg-surface">
-        <p class="headline text-uppercase text-h4">store</p>
+        <p class="headline text-uppercase text-h4" style="cursor: pointer;" @click="router.push('/')">store</p>
+
         <v-spacer/>
+
         <div class="d-flex flex-row-reverse">
             <v-btn v-if="token != null" class="button bg-primary text-none" size="large" prepend-icon="mdi-account" rounded>
                 {{ jwt_decode<any>(token).username }}

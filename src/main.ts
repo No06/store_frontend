@@ -3,8 +3,6 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-// import SvgIcon from '@jamescoyle/vue-icon';
-
 import App from './App.vue'
 import router from './router'
 import { vuetify, SvgIcon } from './plugins/vuetify';

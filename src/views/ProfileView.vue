@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import jwt_decode from 'jwt-decode';
-const token = jwt_decode<any>(localStorage.getItem("token")!)
+import { useTokenStore } from '@/stores/token';
+
+const tokenStore = useTokenStore()
+const decodeToken = tokenStore.decodeToken()
 </script>
 
 <template>
@@ -11,7 +13,7 @@ const token = jwt_decode<any>(localStorage.getItem("token")!)
                     <v-icon size="80px" icon="mdi-help-circle-outline"/>
                 </div>
                 <div class="w-100">
-                    <h1>{{ token.username }}</h1>
+                    <h1>{{ decodeToken.username }}</h1>
                 </div>
             </div>
         </v-sheet>

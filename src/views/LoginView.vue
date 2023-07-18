@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router';
 
+import { useTokenStore } from '@/stores/token';
+
 const loading = ref(false)
 const isWarning = ref(false)
 const warningMsg = ref('')
@@ -26,6 +28,7 @@ const { handleSubmit } = useForm({
 const username = useField('username')
 const password = useField('password')
 const router = useRouter()
+const tokenStore = useTokenStore()
 
 const login = handleSubmit((values: any) => {
   isWarning.value = false
@@ -38,7 +41,7 @@ const login = handleSubmit((values: any) => {
   })
   .then(resp => {
     if (resp.status == 200) {
-      localStorage.setItem('token', resp.data);
+      tokenStore.update(resp.data);
       router.push('/')
     } else {
       isWarning.value = true
