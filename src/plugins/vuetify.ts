@@ -11,8 +11,10 @@ const lightTheme: ThemeDefinition = {
   colors: {
     background: '#FFFFFF',
     surface: '#FFFFFF',
-    primary: '#2196F3',
+    primary: '#0061A4',
     onPrimary: '#FFF3F0',
+    primaryContainer: '#D1E4FF',
+    onPrimaryContainer: '#001D36',
     'primary-darken-1': '#FFB74D',
     secondary: '#03DAC6',
     'secondary-darken-1': '#018786',

@@ -8,7 +8,7 @@ const router = useRouter()
 
 const tokenStore = useTokenStore()
 const token = tokenStore.token
-const items = [
+const dropDownItems = [
     {
         title: "账号",
         onClicked: () => router.push("/profile")
@@ -24,45 +24,54 @@ const items = [
 </script>
 
 <template>
-    <div class="appbar w-100 bg-surface">
-        <p class="headline text-uppercase text-h4" style="cursor: pointer;" @click="router.push('/')">store</p>
+    <div class="appbar w-100 bg-surface justify-space-between">
+        <p class="headline text-uppercase" style="cursor: pointer;" @click="router.push('/')">store</p>
 
-        <v-spacer/>
+        <div class="justify-center">
+            <v-btn class="mx-2">
+                主页
+            </v-btn>
+            <v-btn class="mx-2">
+                全部商品
+            </v-btn>
+        </div>
 
         <div class="d-flex flex-row-reverse">
-            <v-btn v-if="token != null" class="button bg-primary text-none" size="large" prepend-icon="mdi-account" rounded>
-                {{ jwt_decode<any>(token).username }}
+            <div>
+                <v-btn v-if="token != null" class="button bg-primary text-none rounded-lg" size="large" prepend-icon="mdi-account">
+                    {{ jwt_decode<any>(token).username }}
 
-                <v-menu activator="parent">
-                    <v-list>
-                        <v-list-item
-                            v-for="(item, index) in items"
-                            :key="index"
-                            :value="index"
-                            @click="item.onClicked"
-                        >
-                            <v-list-item-title>{{ item.title }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </v-btn>
-            
-            <v-btn v-else class="button elevation-3" size="large" rounded @click="router.push('/login')">
-                登录
-            </v-btn>
+                    <v-menu activator="parent">
+                        <v-list>
+                            <v-list-item
+                                v-for="(item, index) in dropDownItems"
+                                :key="index"
+                                :value="index"
+                                @click="item.onClicked"
+                            >
+                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </v-btn>
+                
+                <v-btn v-else class="button elevation-3" size="large" rounded @click="router.push('/login')">
+                    登录
+                </v-btn>
+            </div>
+            <v-divider vertical class="mx-5"></v-divider>
+            <v-row class="flex-row-reverse" align="center" justify="center">
+                <v-btn icon="mdi-cart" variant="text" class="mx-2" border/>
+                <v-btn icon="mdi-magnify" variant="text" class="mx-2" border/>
+            </v-row>
         </div>
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @font-face {
-  font-family: "Roboto";
-  src: local("Roboto"), url("/fonts/Roboto-Bold.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Noto Sans SC";
-  src: local("Noto Sans SC"), url("/fonts/NotoSansSC-Medium.otf") format("opentype");
+  font-family: "xiaowei";
+  src: url("/fonts/xiaowei.woff2") format("woff2");
 }
 
 .appbar {
@@ -73,28 +82,27 @@ const items = [
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 80px;
+    padding: 12.5px 80px;
     transition: 0.5s;
     z-index: 1;
     
     .headline {
-        font-family: 'Roboto', sans-serif;
-        font-size: 32px;
+        font-family: 'xiaowei';
+        font-size: 36px;
         font-weight: 700;
         text-decoration: none;
         letter-spacing: 2px;
     }
 
     .button {
-        font-family: 'Noto Sans SC';
         font-weight: 600;
-        padding: 0 30px;
+        padding: 0 20px;
         font-size: 18px;
         letter-spacing: 2px;
-    }
-
-    .flex-item {
-        margin-left: 10px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        overflow: hidden;
     }
 }
 </style>

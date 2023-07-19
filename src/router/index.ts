@@ -38,10 +38,6 @@ const tokenCheckExcludePaths = new Set([
 ])
 router.beforeEach((to, from, next) => {
   const tokenStore = useTokenStore()
-  if (!excludePaths.has(to.path) && tokenStore.token == null) {
-    next("/login")
-    return
-  }
   if (!tokenCheckExcludePaths.has(to.path) && tokenStore.token != null) {
     axios.get("http://localhost:8080/auth/checkToken", {
       headers: {
@@ -53,6 +49,10 @@ router.beforeEach((to, from, next) => {
         tokenStore.remove()
       } 
     })
+  }
+  if (!excludePaths.has(to.path) && tokenStore.token == null) {
+    next("/login")
+    return
   }
   next()
 })

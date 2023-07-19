@@ -9,7 +9,7 @@ const decodeToken = tokenStore.decodeToken()
     <div class="d-flex flex-column" style="margin: 50px 300px;">
         <v-sheet border rounded class="mb-5">
             <div class="d-flex flex-row align-center">
-                <div class="border ma-5" style="border-radius: 90px;">
+                <div class="border ma-5 rounded-circle">
                     <v-icon size="80px" icon="mdi-help-circle-outline"/>
                 </div>
                 <div class="w-100">
