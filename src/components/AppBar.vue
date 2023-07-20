@@ -21,6 +21,16 @@ const dropDownItems = [
         }
     }
 ]
+const navigationItems = [
+    {
+        name: "主页",
+        path: "/",
+    },
+    {
+        name: "全部商品",
+        path: "/collections/all-products",
+    }
+]
 </script>
 
 <template>
@@ -28,11 +38,20 @@ const dropDownItems = [
         <p class="headline text-uppercase" style="cursor: pointer;" @click="router.push('/')">store</p>
 
         <div class="justify-center">
-            <v-btn class="mx-2">
-                主页
-            </v-btn>
-            <v-btn class="mx-2">
-                全部商品
+            <v-btn 
+                v-for="(item, i) in navigationItems" 
+                :key="i"
+                :color="router.currentRoute.value.path == item.path ? 'primary' : undefined"
+                class="mx-2"
+                size="large"
+                @click="() => {
+                    if (router.currentRoute.value.path != item.path) {
+                        router.push(item.path)
+                    }
+                }"
+                rounded
+            >
+                {{ item.name }}
             </v-btn>
         </div>
 
@@ -59,10 +78,10 @@ const dropDownItems = [
                     登录
                 </v-btn>
             </div>
-            <v-divider vertical class="mx-5"></v-divider>
+            <v-divider vertical class="mx-6"></v-divider>
             <v-row class="flex-row-reverse" align="center" justify="center">
-                <v-btn icon="mdi-cart" variant="text" class="mx-2" border/>
-                <v-btn icon="mdi-magnify" variant="text" class="mx-2" border/>
+                <v-btn icon="mdi-cart" variant="text"/>
+                <v-btn icon="mdi-magnify" variant="text"/>
             </v-row>
         </div>
     </div>
@@ -92,6 +111,15 @@ const dropDownItems = [
         font-weight: 700;
         text-decoration: none;
         letter-spacing: 2px;
+    }
+    .navigation-select {
+        $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
+        
+        font-weight: bold;
+        background-image: linear-gradient($color-primaryContainer, $color-primaryContainer);
+        background-size: 100% 40%;
+        background-clip: content-box;
+        background-position: bottom 10px right 0;
     }
 
     .button {
