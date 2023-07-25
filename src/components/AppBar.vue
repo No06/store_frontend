@@ -17,7 +17,7 @@ const dropDownItems = [
         title: "注销",
         onClicked: () => {
             tokenStore.remove();
-            router.push("/login");
+            window.location.reload();
         }
     }
 ]
