@@ -2,7 +2,10 @@
 import { toRefs } from 'vue';
 
 const props = defineProps({
-    product: Object()
+    product: {
+      type: Object,
+      required: true
+    }
 })
 const { product } = toRefs(props)
 </script>

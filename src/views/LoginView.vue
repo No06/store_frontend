@@ -48,12 +48,12 @@ const login = handleSubmit((values: any) => {
       warningMsg.value = resp.data
     }
   })
-  .catch((e) => {
+  .catch(e => {
     const resp = e.response
     if (resp != null) {
       errorMsg.value = resp.data
     } else {
-      errorMsg.value = e
+      errorMsg.value = e.message
     }
     isError.value = true
   })

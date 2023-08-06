@@ -2,6 +2,8 @@ import axios from 'axios'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useTokenStore } from '@/stores/token';
 
+import CollectionsView from '@/views/CollectionsView.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -16,8 +18,14 @@ const router = createRouter({
         },
         {
           path: '/profile',
-          name: 'profile',
           component: () => import('../views/ProfileView.vue')
+        },
+        {
+          path: "/collections/all-products",
+          component: CollectionsView,
+          props: {
+            url: "http://localhost:8080/product/getAll"
+          }
         }
       ]
     },
@@ -29,17 +37,18 @@ const router = createRouter({
   ]
 })
 
-const excludePaths = new Set([
-  "/login",
-  "/"
+// 访问前需要登录的路由（敏感页面）
+const needTokenPaths = new Set([
+  "/profile"
 ])
+// 不进行token校验的路由
 const tokenCheckExcludePaths = new Set([
   "/login"
 ])
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const tokenStore = useTokenStore()
   if (!tokenCheckExcludePaths.has(to.path) && tokenStore.token != null) {
-    axios.get("http://localhost:8080/auth/checkToken", {
+    await axios.get("http://localhost:8080/auth/checkToken", {
       headers: {
         token: tokenStore.token
       }
@@ -49,8 +58,9 @@ router.beforeEach((to, from, next) => {
         tokenStore.remove()
       } 
     })
+    .catch(e => tokenStore.remove())
   }
-  if (!excludePaths.has(to.path) && tokenStore.token == null) {
+  if (needTokenPaths.has(to.path) && tokenStore.token == null) {
     next("/login")
     return
   }

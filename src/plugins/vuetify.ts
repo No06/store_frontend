@@ -9,8 +9,8 @@ import SvgIcon from '@jamescoyle/vue-icon';
 const lightTheme: ThemeDefinition = {
   dark: false,
   colors: {
-    background: '#FFFFFF',
-    surface: '#FFFFFF',
+    white: '#FFFFFF',
+    surface: '#EEEEEE',
     primary: '#0061A4',
     onPrimary: '#FFF3F0',
     primaryContainer: '#D1E4FF',

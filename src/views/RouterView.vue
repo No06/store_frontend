@@ -4,8 +4,10 @@ import AppBar from '../components/AppBar.vue';
 
 <template>
   <app-bar/>
-  <div class="d-flex flex-column w-100 h-100" style="position: absolute;">
+  <div class="d-flex flex-column w-100 h-100 bg-surface" style="position: absolute;">
     <app-bar style="position: static; visibility: hidden;"/>
-    <router-view/>
+    <suspense>
+      <router-view/>
+    </suspense>
   </div>
 </template>
