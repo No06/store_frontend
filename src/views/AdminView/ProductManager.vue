@@ -3,7 +3,8 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 import ErrorMessage from '@/components/ErrorMessage.vue';
-import { boyerMoore } from '@/utils/boyerMorre';
+import TrItem from '@/components/AdminView/TrItem.vue';
+import FilterBar from '@/components/AdminView/FilterBar.vue';
 
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 
@@ -11,18 +12,13 @@ import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 const isLoading = ref(true)
 const error = ref<any>(false)
 const products = ref<Array<any>>([])
-const currentPrds = ref<Array<any>>([])
+const obtainedPrds = ref<Array<any>>([])
 const categorys = ref<Array<any>>(["全部"])
-const selectUpdate = ref(false)
-
-// 表单接收
-const searchProductName = ref("")
-const categorySelect = ref("全部")
 
 axios.get("http://localhost:8080/product/getAll")
     .then(resp => {
         products.value = resp.data
-        currentPrds.value = products.value
+        obtainedPrds.value = products.value
     })
     .catch(e => error.value = e.message)
     .finally(() => isLoading.value = false)
@@ -32,60 +28,11 @@ axios.get("http://localhost:8080/product/getAllCategory")
         categorys.value = categorys.value.concat(resp.data.map((item: any) => item.name))
     })
     .catch(e => error.value = e.message)
-
-function categorySearch(products: any[]) {
-    if (categorySelect.value == "全部") return products
-
-    const _products: any[] = []
-    products.forEach((i) => {
-        if (categorySelect.value == i.category.name) {
-            _products.push(i)
-        }}
-    )
-    return _products;
-}
-function keywordSearch(products: any[]) {
-    if (searchProductName.value == "") return products
-
-    const _products: any[] = []
-    products.forEach((i) => {
-        if (boyerMoore(i.name.toLowerCase(), searchProductName.value.toLowerCase()) != -1) {
-            _products.push(i)
-        }}
-    )
-    return _products;
-}
-function search() {
-    const _products = products.value
-    currentPrds.value = keywordSearch(categorySearch(_products))
-}
 </script>
 
 <template>
     <div v-if="!error" class="d-flex flex-column w-100 pa-4">
-        <div class="ma-4">
-            <v-toolbar-title class="mb-4">数量：{{ currentPrds.length }}</v-toolbar-title>
-            <v-form class="d-flex align-center" @submit.prevent="search">
-                <v-btn icon="mdi-magnify" variant="text" class="mr-2" type="submit"/>
-                <v-select
-                    class="mr-5"
-                    hide-details
-                    label="类别"
-                    v-model="categorySelect"
-                    :items="categorys"
-                    variant="solo-filled"
-                    style="min-width: 150px;"
-                    @update:menu="search"
-                ></v-select>
-                <v-text-field
-                    v-model="searchProductName"
-                    class="flex-1-1-100"
-                    clearable
-                    hide-details="auto"
-                    label="商品名称关键词查找"
-                />
-            </v-form>
-        </div>
+        <filter-bar :products="products" :categorys="categorys" v-model:obtained-prds="obtainedPrds"/>
 
         <div class="w-100">
             <v-table fixed-header>
@@ -111,23 +58,15 @@ function search() {
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-if="isLoading">
+                <tbody v-if="isLoading">
+                    <tr>
                         <td colspan="1000">
                             <v-skeleton-loader type="list-item-two-line"/>
                         </td>
                     </tr>
-                    <tr v-else v-for="item in currentPrds" :key="item.id">
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.discount }}</td>
-                        <td>{{ item.stock }}</td>
-                        <td>{{ item.category.name }}</td>
-                        <td>
-                            <v-btn variant="text" icon="mdi-pencil" size="small"/>
-                            <v-btn variant="text" icon="mdi-delete" size="small"/>
-                        </td>
-                    </tr>
+                </tbody>
+                <tbody v-else>
+                    <tr-item v-for="item in obtainedPrds" :key="item.id" :product="item"/>
                 </tbody>
             </v-table>
         </div>
