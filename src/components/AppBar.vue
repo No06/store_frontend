@@ -21,6 +21,14 @@ const dropDownItems = [
         }
     }
 ]
+if (tokenStore.decodeToken().isAdmin) {
+    dropDownItems.unshift(
+        {
+            title: "控制面板",
+            onClicked: () => router.push("/admin")
+        }
+    )
+}
 const navigationItems = [
     {
         name: "主页",
@@ -35,7 +43,9 @@ const navigationItems = [
 
 <template>
     <div class="appbar w-100 bg-surface justify-space-between">
-        <p class="headline text-uppercase" style="cursor: pointer;" @click="router.push('/')">store</p>
+        <p class="headline text-uppercase" @click="router.push('/')">
+            store
+        </p>
 
         <div class="justify-center">
             <v-btn 
@@ -58,14 +68,13 @@ const navigationItems = [
         <div class="d-flex flex-row-reverse">
             <div>
                 <v-btn v-if="token != null" class="button bg-primary text-none rounded-lg" size="large" prepend-icon="mdi-account">
-                    {{ jwt_decode<any>(token).username }}
+                    {{ tokenStore.decodeToken().username }}
 
                     <v-menu activator="parent">
                         <v-list>
                             <v-list-item
-                                v-for="(item, index) in dropDownItems"
-                                :key="index"
-                                :value="index"
+                                v-for="(item, i) in dropDownItems"
+                                :key="i"
                                 @click="item.onClicked"
                             >
                                 <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -111,6 +120,7 @@ const navigationItems = [
         font-weight: 700;
         text-decoration: none;
         letter-spacing: 2px;
+        cursor: pointer;
     }
     .navigation-select {
         $color-primaryContainer : rgb(var(--v-theme-primaryContainer));

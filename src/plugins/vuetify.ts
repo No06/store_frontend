@@ -4,7 +4,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 
-import SvgIcon from '@jamescoyle/vue-icon';
+import SvgIcon from '@jamescoyle/vue-icon/package.json';
 
 const lightTheme: ThemeDefinition = {
   dark: false,

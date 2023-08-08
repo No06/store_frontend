@@ -39,25 +39,25 @@ const login = handleSubmit((values: any) => {
       'Content-Type': 'application/json'
     }
   })
-  .then(resp => {
-    if (resp.status == 200) {
-      tokenStore.update(resp.data);
-      router.push('/')
-    } else {
-      isWarning.value = true
-      warningMsg.value = resp.data
-    }
-  })
-  .catch(e => {
-    const resp = e.response
-    if (resp != null) {
-      errorMsg.value = resp.data
-    } else {
-      errorMsg.value = e.message
-    }
-    isError.value = true
-  })
-  .finally(() => loading.value = false)
+    .then(resp => {
+      if (resp.status == 200) {
+        tokenStore.update(resp.data);
+        router.push('/')
+      } else {
+        isWarning.value = true
+        warningMsg.value = resp.data
+      }
+    })
+    .catch(e => {
+      const resp = e.response
+      if (resp != null) {
+        errorMsg.value = resp.data
+      } else {
+        errorMsg.value = e.message
+      }
+      isError.value = true
+    })
+    .finally(() => loading.value = false)
 })
 </script>
 
@@ -69,52 +69,24 @@ const login = handleSubmit((values: any) => {
           登录
         </v-card-title>
         <form @submit.prevent="login">
-          <v-text-field
-            v-model="username.value.value"
-            :counter="16"
-            :error-messages="username.errorMessage.value"
-            class="pb-2"
-            label="账号"/>
-          <v-text-field
-            v-model="password.value.value"
-            :counter="30"
-            :error-messages="password.errorMessage.value"
-            class="pb-2"
-            label="密码"/>
-          <v-btn 
-            block 
-            :loading="loading"
-            size="large" 
-            variant="elevated" 
-            type="submit" 
-            color="blue-darken-3">
+          <v-text-field v-model="username.value.value" :counter="16" :error-messages="username.errorMessage.value"
+            class="pb-2" label="账号" />
+          <v-text-field v-model="password.value.value" :counter="30" :error-messages="password.errorMessage.value"
+            class="pb-2" label="密码" />
+          <v-btn block :loading="loading" size="large" variant="elevated" type="submit" color="blue-darken-3">
             登录
           </v-btn>
         </form>
       </v-card>
 
-      <v-alert
-        class="mt-5"
-        color="warning"
-        theme="dark"
-        icon="mdi-information"
-        v-if=isWarning
-        border>
+      <v-alert class="mt-5" color="warning" theme="dark" icon="mdi-information" v-if=isWarning border>
         {{ warningMsg }}
       </v-alert>
 
-      <v-alert
-        class="mt-5"
-        color="error"
-        theme="dark"
-        icon="mdi-close-circle-outline"
-        v-if=isError
-        border>
+      <v-alert class="mt-5" color="error" theme="dark" icon="mdi-close-circle-outline" v-if=isError border>
         {{ errorMsg }}
       </v-alert>
     </div>
-    
-    <!-- <RouterView /> -->
   </div>
 </template>
 
@@ -132,6 +104,7 @@ const login = handleSubmit((values: any) => {
   align-items: center;
   background-image: linear-gradient(to top right, rgb(135, 206, 235) 0%, rgb(176, 224, 230) 50%, rgb(173, 216, 230) 100%);
 }
+
 .form-box {
   border-radius: 10px;
   background-color: aliceblue;

@@ -42,7 +42,7 @@ watch(
         >
             <img class="product_image" :src="imageSrc">
             <div v-if="product.stock <= 0" class="out_of_stock">
-                <p class="pa-2">售空</p>
+                <p class="py-2">售空</p>
             </div>
         </v-sheet>
         <div 
@@ -78,12 +78,14 @@ watch(
     font-size: 20px;
     letter-spacing: 1px;
     text-underline-offset: 5px;
+    cursor: pointer;
 }
 .product_price {
     display: flex;
     align-items: center;
     color: crimson;
     .original_price {
+        color: black;
         opacity: .5;
         text-decoration: line-through;
         font-size: large;

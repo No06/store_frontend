@@ -3,34 +3,46 @@ import axios from 'axios';
 import { ref, toRefs } from 'vue';
 
 import ProductItem from '../components/ProductItem.vue';
+import ErrorMessage from '../components/ErrorMessage.vue';
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 
 const props = defineProps({
     url: String
 })
 const { url } = toRefs(props)
 
-const products = ref()
-const error = ref()
-error.value = false
+const products = ref<Array<any>>()
+const isLoading = ref(true)
+const error = ref<any>(false)
 
-await axios.get(url?.value!)
-.then(resp => {
-    products.value = resp.data
-})
-.catch(e => {
-    error.value = e
-})
+axios.get(url?.value!)
+.then(resp => products.value = resp.data)
+.catch(e => error.value = e)
+.finally(() => isLoading.value = false)
 </script>
 
 <template>
     <div class="d-flex h-100">
-        <div class="filter-bar font-wlcmg">
+        <div class="filter-bar">
             <div>
                 <p class="">过滤</p>
             </div>
         </div>
+
         <v-divider vertical/>
-        <v-container v-if="!error" class="mx-5">
+
+        <v-container v-if="isLoading" class="mx-5">
+            <v-row no-gutters>
+                <v-col cols="12" md="3">
+                    <v-skeleton-loader
+                        class="ma-5"
+                        max-width="300"
+                        type="image, article"
+                    />
+                </v-col>
+            </v-row>
+        </v-container>
+        <v-container v-else-if="!error" class="mx-5">
             <v-row no-gutters>
                 <v-col
                     v-for="n in products"
@@ -42,17 +54,11 @@ await axios.get(url?.value!)
                 </v-col>
             </v-row>
         </v-container>
-        <v-container v-else class="d-flex justify-center align-center text-h4" style="color: crimson;">
-            <p>错误：{{ error.message }}</p>
-        </v-container>
+        <error-message v-else>{{ error.message }}</error-message>
     </div>
 </template>
 
 <style lang="scss" scoped>
-@font-face {
-  font-family: "jf-openhuninn";
-  src: url("/fonts/jf-openhuninn.woff2") format("woff2");
-}
 .filter-bar {
     width: 20%;
     display: flex;
@@ -60,10 +66,5 @@ await axios.get(url?.value!)
     align-items: center;
     font-size: 42px;
     font-family: "jf-openhuninn";
-}
-.font-wlcmg {
-  font-family: "jf-openhuninn";
-  font-style: normal;
-  color: #333333;
 }
 </style>

@@ -14,7 +14,13 @@ export const useTokenStore = defineStore('tokenStore', () => {
         token.value = null
     }
     function decodeToken() {
-        return jwt_decode<any>(token.value!)
+        let decodeToken;
+        try {
+            decodeToken = jwt_decode<any>(token.value!)
+        } catch {
+            return Object
+        }
+        return decodeToken
     }
     return { token, update, remove, decodeToken }
 })
