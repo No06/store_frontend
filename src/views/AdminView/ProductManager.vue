@@ -28,6 +28,10 @@ axios.get("http://localhost:8080/product/getAllCategory")
         categorys.value = categorys.value.concat(resp.data.map((item: any) => item.name))
     })
     .catch(e => error.value = e.message)
+
+function deletePrd(index: number) {
+    obtainedPrds.value.splice(index, 1)
+}
 </script>
 
 <template>
@@ -66,7 +70,7 @@ axios.get("http://localhost:8080/product/getAllCategory")
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr-item v-for="item in obtainedPrds" :key="item.id" :product="item"/>
+                    <tr-item v-for="(item, i) in obtainedPrds" :key="i" :product="item" @delete="deletePrd(i)"/>
                 </tbody>
             </v-table>
         </div>

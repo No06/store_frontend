@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
-import jwt_decode from 'jwt-decode';
 
 import { useTokenStore } from '@/stores/token';
 

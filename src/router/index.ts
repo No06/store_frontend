@@ -61,9 +61,13 @@ const needTokenPaths = new Set([
 const tokenCheckExcludePaths = new Set([
 	"/login"
 ])
+function getParentPath(path: string) {
+	return "/" + path.split("/")[1]
+}
 router.beforeEach(async (to, from, next) => {
 	const tokenStore = useTokenStore()
-	if (!tokenCheckExcludePaths.has(to.path) && tokenStore.token != null) {
+
+	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && tokenStore.token != null) {
 		await axios.get("http://localhost:8080/auth/checkToken", {
 			headers: {
 				token: tokenStore.token
@@ -76,7 +80,7 @@ router.beforeEach(async (to, from, next) => {
 		})
 		.catch(tokenStore.remove)
 	}
-	if (needTokenPaths.has(to.path) && tokenStore.token == null) {
+	if (needTokenPaths.has(getParentPath(to.path)) && tokenStore.token == null) {
 		next("/login")
 		return
 	}

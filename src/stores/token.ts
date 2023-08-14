@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { ref } from 'vue';
 
 export const useTokenStore = defineStore('tokenStore', () => {
-    const tokenName = "token";
+    const tokenName = "jwt";
     const token = ref(localStorage.getItem(tokenName))
     function update(newToken : string) {
         localStorage.setItem(tokenName, newToken)

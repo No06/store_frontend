@@ -56,7 +56,7 @@ function search() {
 		<v-toolbar-title class="mb-4">数量：{{ obtainedPrds.length }}</v-toolbar-title>
 		<v-form class="d-flex align-center" @submit.prevent="search">
 			<v-btn icon="mdi-magnify" variant="text" class="mr-2" type="submit" />
-			<v-select class="mr-5" hide-details label="类别" v-model="searchCategoryName" :items="categorys"
+			<v-combobox class="mr-5" hide-details label="类别" v-model="searchCategoryName" :items="categorys"
 				variant="solo-filled" style="min-width: 150px" @update:menu="search" />
 			<v-text-field v-model="searchProductName" class="flex-1-1-100" clearable hide-details="auto"
 				label="商品名称关键词查找" />
