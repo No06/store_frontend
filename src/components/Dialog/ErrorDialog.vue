@@ -1,0 +1,32 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    title: String,
+    modelValue: Boolean
+})
+const emit = defineEmits(['update:modelValue'])
+const modelValue = computed({
+    get: () => props.modelValue,
+    set: (val) => {
+        emit('update:modelValue', val)
+    }
+})
+</script>
+
+<template>
+    <v-dialog v-model="modelValue" activator="parent" persistent width="auto">
+        <v-card>
+            <v-card-text>
+                <v-container class="d-flex align-center">
+                    <v-icon icon="mdi-alert-circle" size="x-large" />
+                    <v-card-title>{{ title }}</v-card-title>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" variant="elevated" block rounded="xs" size="x-large" @click="modelValue = false">确定</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>

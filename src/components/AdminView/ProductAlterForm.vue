@@ -5,6 +5,11 @@ import { nonull, integer, postive } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
 
+interface ProductImage {
+    image_url: string
+    product: number
+}
+
 const props = defineProps({
     product: {
         type: Object,
@@ -13,7 +18,6 @@ const props = defineProps({
 })
 const _product = toRef(props, 'product')
 const _discount = ref<Number>(_product.value.discount * 100)
-const _images = ref(_product.value.images.map((image: any) => image.image_url))
 
 // 表单规则
 const discount = (value: any) => {
@@ -23,6 +27,13 @@ const discount = (value: any) => {
 function discountUpdate(newValue: any) {
 	_discount.value = newValue
 	_product.value.discount = newValue / 100
+}
+function imageAdd(url: string) {
+    const product_image: ProductImage = {
+        image_url: url,
+        product: _product.value.id,
+    }
+    _product.value.images.push(product_image)
 }
 </script>
 
@@ -62,20 +73,20 @@ function discountUpdate(newValue: any) {
                 <v-btn icon="mdi-plus" size="x-small" variant="text">
                     <i class="mdi-plus mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
                         aria-hidden="true"></i>
-                    <image-add-dialog @submit="(url) => _images.push(url)"/>
+                    <image-add-dialog @submit="imageAdd"/>
                 </v-btn>
             </div>
             <v-list lines="one">
-                <v-list-item v-for="(image, i) in _images" :key="i" :title="image" variant="tonal">
+                <v-list-item v-for="(image, i) in _product.images" :key="i" :title="image.image_url" variant="tonal">
                     <template v-slot:prepend>
-                        <v-img :width="50" aspect-ratio="1/1" cover :src="image" class="mr-3" />
+                        <v-img :width="50" aspect-ratio="1/1" cover :src="image.image_url" class="mr-3" />
                     </template>
 
                     <template v-slot:append>
                         <v-btn icon="mdi-delete" variant="text">
                             <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
                                 aria-hidden="true"></i>
-                            <warning-dialog title="确定要删除吗" @submit="_images.splice(i, 1)" />
+                            <warning-dialog title="确定要删除吗" @submit="_product.images.splice(i, 1)" />
                         </v-btn>
                     </template>
                 </v-list-item>

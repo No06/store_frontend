@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import axios from 'axios';
 
 import DialogAction from '../Dialog/DialogAction.vue';
+import LoadingDialog from '../Dialog/LoadingDialog.vue';
+import ErrorDialog from '../Dialog/ErrorDialog.vue';
 import ProductAlterForm from './ProductAlterForm.vue';
+import { useTokenStore } from '@/stores/token';
 
 const props = defineProps({
 	product: {
@@ -16,6 +20,8 @@ const emit = defineEmits(['update:modelValue', 'update:product'])
 // 数据
 // eslint-disable-next-line vue/no-setup-props-destructure
 var _product = ref({ ...props.product })
+const isLoading = ref(false)
+const errorMsg = ref("")
 const open = computed({
 	get: () => props.modelValue,
 	set: (value) => {
@@ -24,14 +30,28 @@ const open = computed({
 })
 
 // 方法
-// TODO
 function submit() {
+	isLoading.value = true
+	const tokenStore = useTokenStore()
+	axios.put('http://localhost:8080/product/update', _product.value, {
+		headers: {
+			token: tokenStore.token
+		}
+	})
+	.then(response => {
+		open.value = false
+	}).catch(error => {
+		errorMsg.value = error.message
+	}).finally(() => {
+		isLoading.value = false
+	});
 	emit('update:product', _product.value)
 }
 </script>
 
 <template>
-	<v-dialog v-model="open" activator="parent" persistent width="auto">
+	<v-dialog v-if="!isLoading" v-model="open" activator="parent" persistent width="auto"
+		@update:model-value="_product = ref({ ...props.product })">
 		<v-card>
 			<v-card-title>修改商品信息</v-card-title>
 			<v-card-text>
@@ -39,7 +59,9 @@ function submit() {
 					<product-alter-form :product="_product" />
 				</v-container>
 			</v-card-text>
-			<dialog-action @cancel="open = false, _product = ref({ ...props.product })" @submit="submit"/>
+			<dialog-action @cancel="open = false" @submit="submit" />
 		</v-card>
 	</v-dialog>
+	<loading-dialog v-else-if="!errorMsg" v-model="open" title="提交中"/>
+	<error-dialog v-else v-model="open" :title="errorMsg"/>
 </template>

@@ -10,7 +10,7 @@ var url = ref("")
 
 function submit() {
     open.value = false
-    emit('submit', url)
+    emit('submit', url.value)
 }
 </script>
 
