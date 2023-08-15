@@ -5,6 +5,7 @@ import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router';
 
 import { useTokenStore } from '@/stores/token';
+import { nonull, length } from '@/utils/formRules'
 
 const loading = ref(false)
 const isWarning = ref(false)
@@ -13,16 +14,20 @@ const isError = ref(false)
 const errorMsg = ref('')
 
 const { handleSubmit } = useForm({
-  validationSchema: {
-    username(value: string) {
-      if (value?.length >= 2) return true
-      return '用户名至少2位数'
+    validationSchema: {
+        username(value: string) {
+            if (value.length >= 2) {
+                if (value.length <= 16) return true
+                return "长度超出限制"
+            }
+            return '用户名至少需要2位数'
+        },
+        password(value: string) {
+            if (value != null && value != "") return true
+            if (value.length >= 30) return "长度超出限制"
+            return '密码不能为空'
+        }
     },
-    password(value: string) {
-      if (value != null && value != "") return true
-      return '密码不能为空'
-    }
-  },
 })
 
 const username = useField('username')
@@ -31,82 +36,82 @@ const router = useRouter()
 const tokenStore = useTokenStore()
 
 const login = handleSubmit((values: any) => {
-  isWarning.value = false
-  isError.value = false;
-  loading.value = true;
-  axios.post("http://localhost:8080/auth/login", JSON.stringify(values), {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(resp => {
-      if (resp.status == 200) {
-        tokenStore.update(resp.data);
-        router.push('/')
-      } else {
-        isWarning.value = true
-        warningMsg.value = resp.data
-      }
+    isWarning.value = false
+    isError.value = false;
+    loading.value = true;
+    axios.post("http://localhost:8080/auth/login", JSON.stringify(values), {
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
-    .catch(e => {
-      const resp = e.response
-      if (resp != null) {
-        errorMsg.value = resp.data
-      } else {
-        errorMsg.value = e.message
-      }
-      isError.value = true
-    })
-    .finally(() => loading.value = false)
+        .then(resp => {
+            if (resp.status == 200) {
+                tokenStore.update(resp.data);
+                router.push('/')
+            } else {
+                isWarning.value = true
+                warningMsg.value = resp.data
+            }
+        })
+        .catch(e => {
+            const resp = e.response
+            if (resp != null) {
+                errorMsg.value = resp.data
+            } else {
+                errorMsg.value = e.message
+            }
+            isError.value = true
+        })
+        .finally(() => loading.value = false)
 })
 </script>
 
 <template>
-  <div class="body justify-center">
-    <div style="width: 300px;">
-      <v-card class="pa-5" elevation="3">
-        <v-card-title class="py-5 font-weight-black pa-2">
-          登录
-        </v-card-title>
-        <form @submit.prevent="login">
-          <v-text-field v-model="username.value.value" :counter="16" :error-messages="username.errorMessage.value"
-            class="pb-2" label="账号" />
-          <v-text-field v-model="password.value.value" :counter="30" :error-messages="password.errorMessage.value"
-            class="pb-2" label="密码" />
-          <v-btn block :loading="loading" size="large" variant="elevated" type="submit" color="blue-darken-3">
-            登录
-          </v-btn>
-        </form>
-      </v-card>
+    <div class="body justify-center">
+        <div style="width: 300px;">
+            <v-card class="pa-5" elevation="3">
+                <v-card-title class="py-5 font-weight-black pa-2">
+                    登录
+                </v-card-title>
+                <form @submit.prevent="login">
+                    <v-text-field v-model="username.value.value" :counter="16" :error-messages="username.errorMessage.value"
+                        class="pb-2" label="账号" />
+                    <v-text-field v-model="password.value.value" :counter="30" :error-messages="password.errorMessage.value"
+                        class="pb-2" label="密码" />
+                    <v-btn block :loading="loading" size="large" variant="elevated" type="submit" color="blue-darken-3">
+                        登录
+                    </v-btn>
+                </form>
+            </v-card>
 
-      <v-alert class="mt-5" color="warning" theme="dark" icon="mdi-information" v-if=isWarning border>
-        {{ warningMsg }}
-      </v-alert>
+            <v-alert class="mt-5" color="warning" theme="dark" icon="mdi-information" v-if=isWarning border>
+                {{ warningMsg }}
+            </v-alert>
 
-      <v-alert class="mt-5" color="error" theme="dark" icon="mdi-close-circle-outline" v-if=isError border>
-        {{ errorMsg }}
-      </v-alert>
+            <v-alert class="mt-5" color="error" theme="dark" icon="mdi-close-circle-outline" v-if=isError border>
+                {{ errorMsg }}
+            </v-alert>
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
 .body {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  line-height: 1.5;
-  max-height: 100vh;
-  display: flex;
-  justify-items: center;
-  align-items: center;
-  background-image: linear-gradient(to top right, rgb(135, 206, 235) 0%, rgb(176, 224, 230) 50%, rgb(173, 216, 230) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    line-height: 1.5;
+    max-height: 100vh;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    background-image: linear-gradient(to top right, rgb(135, 206, 235) 0%, rgb(176, 224, 230) 50%, rgb(173, 216, 230) 100%);
 }
 
 .form-box {
-  border-radius: 10px;
-  background-color: aliceblue;
+    border-radius: 10px;
+    background-color: aliceblue;
 }
 </style>

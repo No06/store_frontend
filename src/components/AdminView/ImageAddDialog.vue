@@ -15,7 +15,7 @@ function submit() {
 </script>
 
 <template>
-    <v-dialog v-model="open" activator="parent" width="500" @update:model-value="url = ''">
+    <v-dialog v-model="open" activator="parent" persistent width="500" @update:model-value="url = ''">
         <v-card>
             <v-card-title>添加图片</v-card-title>
             <v-card-text>

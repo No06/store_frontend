@@ -16,7 +16,7 @@ function submit() {
 </script>
 
 <template>
-    <v-dialog v-model="open" activator="parent" persistent width="auto">
+    <v-dialog v-model="open" activator="parent" width="auto">
         <v-card>
             <v-card-text>
                 <v-container class="d-flex align-center">

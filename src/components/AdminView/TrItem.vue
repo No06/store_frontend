@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import WarningDialog from '../Dialog/WarningDialog.vue';
 
-defineProps({
+const props = defineProps({
     product: {
         type: Object,
         required: true
@@ -13,6 +13,14 @@ defineProps({
 const emit = defineEmits(['delete'])
 
 const alterDialog = ref(false)
+const successSnackBar = ref(false)
+
+function updatePrd(newValue: any) {
+    Object.assign(props.product, newValue)
+}
+function updateSuccess() {
+    successSnackBar.value = true
+}
 </script>
 
 <template>
@@ -25,9 +33,7 @@ const alterDialog = ref(false)
         <td>
             <v-btn variant="text" icon="mdi-pencil" size="small">
                 <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <product-alter-dialog :product="product"
-                        @update:product="(newValue) => Object.assign(product, newValue)"
-                        v-model="alterDialog"/>
+                <product-alter-dialog :product="product" v-model="alterDialog" @update:product="updatePrd" @success="updateSuccess"/>
             </v-btn>
             <v-btn variant="text" icon="mdi-delete" size="small">
                 <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
@@ -35,4 +41,8 @@ const alterDialog = ref(false)
             </v-btn>
         </td>
     </tr>
+    <v-snackbar v-model="successSnackBar" color="success">
+        <v-icon icon="mdi-check" class="mr-2"/>
+        执行成功
+    </v-snackbar>
 </template>
