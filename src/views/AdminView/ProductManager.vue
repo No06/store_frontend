@@ -4,29 +4,32 @@ import { ref } from 'vue';
 
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import TrItem from '@/components/AdminView/TrItem.vue';
-import FilterBar from '@/components/AdminView/FilterBar.vue';
+import ToolBar from '@/components/AdminView/ToolBar.vue';
 
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
+import { Product } from '@/entities/Product';
+import { useCategoryStore } from '@/stores/productCategorys';
 
 // 状态
 const isLoading = ref(true)
 const error = ref<any>(false)
-const products = ref<Array<any>>([])
-const obtainedPrds = ref<Array<any>>([])
-const categorys = ref<Array<any>>(["全部"])
+const products = ref<Array<Product>>([])
+const obtainedPrds = ref<Array<Product>>([])
+const categoryStore = useCategoryStore()
 
-axios.get("http://localhost:8080/product/getAll")
-    .then(resp => {
-        products.value = resp.data
-        obtainedPrds.value = products.value
-    })
-    .catch(e => error.value = e.message)
-    .finally(() => isLoading.value = false)
+Promise.all([
+    axios.get("http://localhost:8080/product/getAll")
+        .then(resp => {
+            products.value = resp.data
+            obtainedPrds.value = products.value
+        }),
 
-axios.get("http://localhost:8080/product/getAllCategory")
-    .then(resp => {
-        categorys.value = categorys.value.concat(resp.data.map((item: any) => item.name))
-    })
+    axios.get("http://localhost:8080/product/getAllCategory")
+        .then(resp => {
+            categoryStore.categorys = resp.data
+        })
+])
+    .then(() => isLoading.value = false)
     .catch(e => error.value = e.message)
 
 function deletePrd(index: number) {
@@ -36,7 +39,7 @@ function deletePrd(index: number) {
 
 <template>
     <div v-if="!error" class="d-flex flex-column w-100 pa-4">
-        <filter-bar :products="products" :categorys="categorys" v-model:obtained-prds="obtainedPrds"/>
+        <tool-bar :products="products" v-model="obtainedPrds"/>
 
         <div class="w-100">
             <v-table fixed-header>
@@ -70,7 +73,7 @@ function deletePrd(index: number) {
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr-item v-for="(item, i) in obtainedPrds" :key="i" :product="item" @delete="deletePrd(i)"/>
+                    <tr-item v-for="(item, i) in obtainedPrds" :key="i" :product="item" @delete:product="deletePrd(i)"/>
                 </tbody>
             </v-table>
         </div>

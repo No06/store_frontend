@@ -1,41 +1,35 @@
 <script lang="ts" setup>
-import { computed, ref, toRef } from 'vue';
+import { ref, toRef } from 'vue';
 
 import { nonull, integer, postive } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
+import { ProductImage } from '@/entities/ProductImage';
+import { useCategoryStore } from '@/stores/productCategorys';
 
-interface ProductImage {
-    image_url: string
-    product: number
-}
-
+// 参数
 const props = defineProps({
     product: {
         type: Object,
         required: true
     },
-    modelValue: Boolean
+    categorys: Array
 })
 const emit = defineEmits(['submit', 'update:modelValue'])
-const modelValue = computed({
-    get: () => props.modelValue,
-    set: (val: boolean) => {
-        emit('update:modelValue', val)
-    }
-})
 
+const isValidated = ref(false)
 const _product = toRef(props, 'product')
 const _discount = ref<Number>(_product.value.discount * 100)
+const categoryStore = useCategoryStore()
 
 // 表单规则
 const discount = (value: any) => {
-	if (value > 100) return '最大值为100'
-	return true
+    if (value > 100) return '最大值为100'
+    return true
 }
 function discountUpdate(newValue: any) {
-	_discount.value = newValue
-	_product.value.discount = newValue / 100
+    _discount.value = newValue
+    _product.value.discount = newValue / 100
 }
 function imageAdd(url: string) {
     const product_image: ProductImage = {
@@ -44,18 +38,26 @@ function imageAdd(url: string) {
     }
     _product.value.images.push(product_image)
 }
+// 查询商品类id
+function categoryUpdate() {
+    categoryStore.categorys.forEach((item) => {
+        if (item.name == _product.value.category.name) {
+            _product.value.category.id = item.id
+        }
+    })
+}
 </script>
 
 // TODO:表单验证
 <template>
-    <v-form @submit.prevent="emit('submit')" v-model="modelValue">
+    <v-form @submit.prevent="() => {if (isValidated) emit('submit')}" v-model="isValidated" required>
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
-                <v-combobox label="类别" v-model="_product.category.name"/>
+                <v-select label="类别" :items="categorys" v-model="_product.category.name" :rules="[nonull]" @update:model-value="categoryUpdate"/>
             </v-col>
             <v-col cols="12" sm="6" md="6">
-                <v-text-field label="商品名" v-model="_product.name" :rules="[nonull]" />
+                <v-text-field label="商品名" v-model="_product.name" :rules="[nonull]"/>
             </v-col>
             <v-col cols="12" sm="6" md="3">
                 <v-text-field label="库存" v-model="_product.stock" type="number" :rules="[nonull, postive, integer]" />
@@ -63,17 +65,15 @@ function imageAdd(url: string) {
 
             <!-- 价格 -->
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格预览" readonly
-                    :model-value="_product.price+' * '+_product.discount+
-                        ' = '+Math.floor(_product.price * _product.discount * 100) / 100"
-                />
+                <v-text-field label="价格预览" readonly :model-value="_product.price + ' * ' + _product.discount +
+                    ' = ' + Math.floor(_product.price * _product.discount * 100) / 100" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格" v-model="_product.price" type="number" :rules="[nonull, postive]" />
+                <v-text-field label="价格" v-model="_product.price" type="number" required :rules="[nonull, postive]" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="折扣" v-model="_discount" :counter="3" type="number" @update:model-value="discountUpdate"
-                    :rules="[nonull, postive, integer, discount]" />
+                <v-text-field label="折扣（%）" v-model="_discount" :counter="3" type="number"
+                    @update:model-value="discountUpdate" required :rules="[nonull, postive, integer, discount]" />
             </v-col>
 
             <!-- 描述 -->
@@ -88,7 +88,7 @@ function imageAdd(url: string) {
                     <v-btn icon="mdi-plus" size="x-small" variant="text">
                         <i class="mdi-plus mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
                             aria-hidden="true"></i>
-                        <image-add-dialog @submit="imageAdd"/>
+                        <image-add-dialog @submit="imageAdd" />
                     </v-btn>
                 </div>
                 <v-list lines="one">
@@ -108,5 +108,6 @@ function imageAdd(url: string) {
                 </v-list>
             </v-col>
         </v-row>
+        <slot name="action"></slot>
     </v-form>
 </template>

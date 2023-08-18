@@ -13,7 +13,7 @@ const imageSrc = ref("")
 const imgScale = ref(1)
 const isError = ref(false)
 const isHover = ref(false)
-const isSale = product.value.discount != 0;
+const isSale = product.value.discount != 1;
 
 try {
     imageSrc.value = product.value.images[0].image_url
@@ -53,7 +53,7 @@ watch(
             <p class="product_name" :class="{ underline: isHover }">{{ product.name }}</p>
             <div class="product_price">
                 <p :class="{ original_price: isSale }">￥{{ product.price }}</p>
-                <p v-if="isSale" class="current_price">￥{{ product.price * 1 + product.discount }}</p>
+                <p v-if="isSale" class="current_price">￥{{ Math.floor(product.price * product.discount * 100) / 100 }}</p>
             </div>
         </div>
     </div>

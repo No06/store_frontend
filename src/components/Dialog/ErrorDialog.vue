@@ -5,17 +5,22 @@ const props = defineProps({
     title: String,
     modelValue: Boolean
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'submit'])
 const modelValue = computed({
     get: () => props.modelValue,
     set: (val) => {
         emit('update:modelValue', val)
     }
 })
+
+function submit() {
+    modelValue.value = false
+    emit('submit')
+}
 </script>
 
 <template>
-    <v-dialog v-model="modelValue" activator="parent" width="auto">
+    <v-dialog :model-value="modelValue" activator="parent" persistent width="auto">
         <v-card>
             <v-card-text>
                 <v-container class="d-flex align-center">
@@ -25,7 +30,7 @@ const modelValue = computed({
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" variant="elevated" block rounded="xs" size="x-large" @click="modelValue = false">确定</v-btn>
+                <v-btn color="primary" variant="flat" block rounded="xs" size="x-large" @click="submit">确定</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

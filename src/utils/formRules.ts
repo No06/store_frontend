@@ -1,6 +1,5 @@
-export const nonull = (value: any) => {
-	const re = new RegExp('^[ ]+$')
-	if (!value || re.test(value)) return '必须填写'
+export const nonull = (value: String | Array<any>) => {
+	if (value == null || value.length == 0) return '必须填写'
 	return true
 }
 export const integer = (value: any) => {

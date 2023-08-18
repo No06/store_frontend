@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import WarningDialog from '../Dialog/WarningDialog.vue';
+import { Product } from '@/entities/Product';
 
 const props = defineProps({
     product: {
@@ -10,16 +11,16 @@ const props = defineProps({
         required: true
     }
 })
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete:product'])
 
 const alterDialog = ref(false)
-const successSnackBar = ref(false)
 
-function updatePrd(newValue: any) {
+function updateSuccess(newValue: Product) {
     Object.assign(props.product, newValue)
 }
-function updateSuccess() {
-    successSnackBar.value = true
+// TODO: 删除接口
+function submit() {
+    emit('delete:product')
 }
 </script>
 
@@ -33,16 +34,12 @@ function updateSuccess() {
         <td>
             <v-btn variant="text" icon="mdi-pencil" size="small">
                 <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <product-alter-dialog :product="product" v-model="alterDialog" @update:product="updatePrd" @success="updateSuccess"/>
+                <product-alter-dialog :product="product" v-model="alterDialog" @update:product="updateSuccess"/>
             </v-btn>
             <v-btn variant="text" icon="mdi-delete" size="small">
                 <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <warning-dialog title="确定要删除这件商品吗？" @submit="emit('delete')"/>
+                <warning-dialog title="确定要删除这件商品吗？" @submit="submit"/>
             </v-btn>
         </td>
     </tr>
-    <v-snackbar v-model="successSnackBar" color="success">
-        <v-icon icon="mdi-check" class="mr-2"/>
-        执行成功
-    </v-snackbar>
 </template>
