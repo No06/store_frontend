@@ -42,7 +42,7 @@ watch(
         >
             <img class="product_image" :src="imageSrc">
             <div v-if="product.stock <= 0" class="out_of_stock">
-                <p class="py-2">售空</p>
+                <p class="py-2">无货</p>
             </div>
         </v-sheet>
         <div 
@@ -102,11 +102,12 @@ watch(
     left: 0;
     top: auto;
     width: 100%;
+    display: block;
     position: absolute;
     display: flex;
     justify-content: center;
     color: dimgrey;
-    background: rgba(255, 255, 255, .7);
+    background: rgba(212, 212, 212, 0.7);
     backdrop-filter: blur(2px);
     font-size: x-large;
 }

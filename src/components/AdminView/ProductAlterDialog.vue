@@ -8,6 +8,8 @@ import ErrorDialog from '../Dialog/ErrorDialog.vue';
 import ProductAlterForm from './ProductAlterForm.vue';
 import { useTokenStore } from '@/stores/token';
 import { useCategoryStore } from '@/stores/productCategorys';
+import { ProductImage } from '@/entities/ProductImage';
+import { Product } from '@/entities/Product';
 
 const props = defineProps({
 	product: {
@@ -19,20 +21,20 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'update:product'])
 
 // 数据
-var _product = ref()
+const _product = ref(new Product)
 const isLoading = ref(false)
 const errorDialog = ref(false)
 const errorMsg = ref("")
-const successSnackBar = ref(false)
 const open = computed({
 	get: () => props.modelValue,
-	set: (value) => {
+	set(value) {
 		emit('update:modelValue', value)
 	}
 })
 
 // 方法
 function submit() {
+	_product.value.images.forEach((item: ProductImage, index: number) => (item.rank = index));
 	isLoading.value = true
 	const tokenStore = useTokenStore()
 	axios.put('http://localhost:8080/product/save', _product.value, {
@@ -42,20 +44,19 @@ function submit() {
 	})
 	.then(() => {
 		open.value = false
-		successSnackBar.value = true
+		emit('update:product', _product.value)
 	}).catch(error => {
 		errorDialog.value = true
 		errorMsg.value = error.message
 	}).finally(() => {
 		isLoading.value = false
-		emit('update:product', _product.value)
 	});
 }
 </script>
 
 <template>
 	<v-dialog v-if="!isLoading && !errorMsg" v-model="open" activator="parent" persistent width="auto"
-		@update:model-value="_product = ref({ ...props.product })">
+		@update:model-value="_product = JSON.parse(JSON.stringify(product))">
 		<v-card>
 			<v-card-title>修改商品信息</v-card-title>
 			<v-card-text>
@@ -71,9 +72,4 @@ function submit() {
 	</v-dialog>
 	<loading-dialog v-else-if="!errorMsg" v-model="open" title="提交中"/>
 	<error-dialog v-else v-model="errorDialog" :title="errorMsg" @submit="errorMsg = ''"/>
-
-    <v-snackbar v-model="successSnackBar" color="success">
-        <v-icon icon="mdi-check" class="mr-2"/>
-        执行成功
-    </v-snackbar>
 </template>

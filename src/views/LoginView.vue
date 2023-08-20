@@ -5,7 +5,6 @@ import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router';
 
 import { useTokenStore } from '@/stores/token';
-import { nonull, length } from '@/utils/formRules'
 
 const loading = ref(false)
 const isWarning = ref(false)
@@ -23,8 +22,8 @@ const { handleSubmit } = useForm({
             return '用户名至少需要2位数'
         },
         password(value: string) {
-            if (value != null && value != "") return true
             if (value.length >= 30) return "长度超出限制"
+            if (value != null && value != "") return true
             return '密码不能为空'
         }
     },
@@ -34,6 +33,7 @@ const username = useField('username')
 const password = useField('password')
 const router = useRouter()
 const tokenStore = useTokenStore()
+const showPw = ref(false)
 
 const login = handleSubmit((values: any) => {
     isWarning.value = false
@@ -75,9 +75,10 @@ const login = handleSubmit((values: any) => {
                 </v-card-title>
                 <form @submit.prevent="login">
                     <v-text-field v-model="username.value.value" :counter="16" :error-messages="username.errorMessage.value"
-                        class="pb-2" label="账号" />
+                        label="账号" />
                     <v-text-field v-model="password.value.value" :counter="30" :error-messages="password.errorMessage.value"
-                        class="pb-2" label="密码" />
+                        label="密码" :append-inner-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="showPw ? 'text' : 'password'" @click:append-inner="showPw = !showPw" />
                     <v-btn block :loading="loading" size="large" variant="elevated" type="submit" color="blue-darken-3">
                         登录
                     </v-btn>

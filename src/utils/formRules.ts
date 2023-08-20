@@ -15,3 +15,12 @@ export const length = (value: any, length: Number) => {
     if (value.length > length) return '超出设定长度'+length
     return true
 }
+export const price = (value: number) => {
+	const str = value.toString()
+	const dot = str.indexOf(".")
+	const dec = str.length - dot - 1
+	if (dot != -1 && dec > 2) {
+		return "超出两位小数"
+	}
+	return true
+}

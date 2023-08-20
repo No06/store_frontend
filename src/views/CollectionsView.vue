@@ -5,6 +5,7 @@ import { ref, toRefs } from 'vue';
 import ProductItem from '../components/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
+import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 
 const props = defineProps({
     url: String
@@ -23,6 +24,9 @@ axios.get(url?.value!)
 
 <template>
     <div class="d-flex h-100">
+        <filter-bar>
+            
+        </filter-bar>
         <div class="filter-bar">
             <div>
                 <p class="">过滤</p>

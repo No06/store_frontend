@@ -20,7 +20,7 @@ function submit() {
 </script>
 
 <template>
-    <v-dialog :model-value="modelValue" activator="parent" persistent width="auto">
+    <v-dialog v-model="modelValue" activator="parent" persistent width="auto">
         <v-card>
             <v-card-text>
                 <v-container class="d-flex align-center">
