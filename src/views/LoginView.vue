@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router';
 
 import { useTokenStore } from '@/stores/token';
+import { login as axiosLogin } from '@/utils/axios';
 
 const loading = ref(false)
 const isWarning = ref(false)
@@ -39,11 +39,8 @@ const login = handleSubmit((values: any) => {
     isWarning.value = false
     isError.value = false;
     loading.value = true;
-    axios.post("http://localhost:8080/auth/login", JSON.stringify(values), {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    
+    axiosLogin(JSON.stringify(values))
         .then(resp => {
             if (resp.status == 200) {
                 tokenStore.update(resp.data);

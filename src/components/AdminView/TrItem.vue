@@ -5,8 +5,7 @@ import ProductAlterDialog from './ProductAlterDialog.vue';
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import LoadingDialog from '../Dialog/LoadingDialog.vue';
 import ErrorDialog from '../Dialog/ErrorDialog.vue';
-import axios from 'axios';
-import { url } from '@/utils/axios';
+import { delProductById } from '@/utils/axios';
 import { useTokenStore } from '@/stores/token';
 
 const props = defineProps({
@@ -26,19 +25,16 @@ const tokenStore = useTokenStore()
 function submit() {
     isLoading.value = true
     errorMsg.value = ''
-    axios.delete(url+"/product/delete/"+props.product.id, {
-        headers: {
-			token: tokenStore.token
-		}
-    }).then(() => {
-        isLoading.value = false
-        deleteDialog.value = false
-        emit('delete:product')
-    }).catch(e => {
-        errorMsg.value = e.message
-    }).finally(() => {
-        isLoading.value = false
-    })
+    delProductById(props.product.id, tokenStore.token)
+        .then(() => {
+            isLoading.value = false
+            deleteDialog.value = false
+            emit('delete:product')
+        }).catch(e => {
+            errorMsg.value = e.message
+        }).finally(() => {
+            isLoading.value = false
+        })
 }
 </script>
 
@@ -52,7 +48,7 @@ function submit() {
         <td>
             <v-btn variant="text" icon="mdi-pencil" size="small">
                 <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <product-alter-dialog :product="product" v-model="alterDialog" @update:product="emit('update:product')"/>
+                <product-alter-dialog lable="修改商品信息" :product="product" v-model="alterDialog" @update:product="emit('update:product')"/>
             </v-btn>
             <v-btn variant="text" icon="mdi-delete" size="small">
                 <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>

@@ -1,6 +1,6 @@
-import axios from 'axios'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useTokenStore } from '@/stores/token';
+import { checkToken, url } from '@/utils/axios';
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,7 +39,7 @@ const router = createRouter({
 					path: "/collections/all-products",
 					component: () => import('@/views/CollectionsView.vue'),
 					props: {
-						url: "http://localhost:8080/product/getAll"
+						url: url+"/product/getAllBySpec"
 					}
 				}
 			]
@@ -68,17 +68,13 @@ router.beforeEach(async (to, from, next) => {
 	const tokenStore = useTokenStore()
 
 	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && tokenStore.token != null) {
-		await axios.get("http://localhost:8080/auth/checkToken", {
-			headers: {
-				token: tokenStore.token
-			}
-		})
-		.then(resp => {
-			if (!resp.data) {
-				tokenStore.remove()
-			}
-		})
-		.catch(tokenStore.remove)
+		await checkToken(tokenStore.token)
+			.then(resp => {
+				if (!resp.data) {
+					tokenStore.remove()
+				}
+			})
+			.catch(tokenStore.remove)
 	}
 	if (needTokenPaths.has(getParentPath(to.path)) && tokenStore.token == null) {
 		next("/login")

@@ -1,74 +1,69 @@
 <script lang="ts" setup>
 import axios from 'axios';
 import { ref, toRefs } from 'vue';
+import * as qs from 'qs';
 
 import ProductItem from '../components/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 
+class searchParams {
+    inStock?: boolean
+    minPrice?: number
+    maxPrice?: number
+    category_id: Array<number> = []
+}
+
 const props = defineProps({
-    url: String
+    url: {
+        type: String,
+        required: true
+    }
 })
 const { url } = toRefs(props)
 
+const _searchParams = ref(new searchParams)
 const products = ref<Array<any>>()
 const isLoading = ref(true)
 const error = ref<any>(false)
 
-axios.get(url?.value!)
-.then(resp => products.value = resp.data)
-.catch(e => error.value = e)
-.finally(() => isLoading.value = false)
+async function init() {
+    isLoading.value = true
+    error.value = false
+    await axios.get(url.value, {
+        params: _searchParams.value,
+        paramsSerializer: params => {
+            return qs.stringify(params, {arrayFormat: 'comma'})
+        }
+    })
+        .then(resp => products.value = resp.data)
+        .catch(e => error.value = e)
+        .finally(() => isLoading.value = false)
+}
+init()
 </script>
 
 <template>
     <div class="d-flex h-100">
-        <filter-bar>
-            
-        </filter-bar>
-        <div class="filter-bar">
-            <div>
-                <p class="">过滤</p>
-            </div>
-        </div>
+        <filter-bar :params="_searchParams" @filter="init"/>
 
-        <v-divider vertical/>
+        <v-divider vertical />
 
         <v-container v-if="isLoading" class="mx-5">
             <v-row no-gutters>
                 <v-col cols="12" md="3">
-                    <v-skeleton-loader
-                        class="ma-5"
-                        max-width="300"
-                        type="image, article"
-                    />
+                    <v-skeleton-loader class="ma-5" max-width="300" type="image, article" />
                 </v-col>
             </v-row>
         </v-container>
         <v-container v-else-if="!error" class="mx-5">
             <v-row no-gutters>
-                <v-col
-                    v-for="n in products"
-                    :key="n.id"
-                    cols="12"
-                    sm="3"
-                >
-                    <product-item :product="n"/>
+                <v-col v-for="n in products" :key="n.id" cols="12" sm="3">
+                    <product-item :product="n" />
                 </v-col>
             </v-row>
         </v-container>
         <error-message v-else>{{ error.message }}</error-message>
     </div>
 </template>
-
-<style lang="scss" scoped>
-.filter-bar {
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 42px;
-    font-family: "jf-openhuninn";
-}
-</style>

@@ -60,7 +60,7 @@ function search() {
 			<v-toolbar-title>数量：{{ modelValue.length }}</v-toolbar-title>
 			<v-btn class="me-2" color="primary" prepend-icon="mdi-plus" variant="flat" size="large" rounded>
 				添加
-				<product-alter-dialog :product="product" v-model="alterDialog" @update:model-value="product = new Product()"
+				<product-alter-dialog lable="添加商品" :product="product" v-model="alterDialog" @update:model-value="product = new Product()"
 					@update:product="emit('update:product')"/>
 			</v-btn>
 		</div>
