@@ -39,3 +39,6 @@ export const getAllProductCategory = () => {
 export const getCountProductsByCategory = () => {
     return axios.get(url+"/product/getCountProductsByCategory")
 }
+export const getProductById = (id: string) => {
+    return axios.get(url+"/product/getById/"+id)
+}

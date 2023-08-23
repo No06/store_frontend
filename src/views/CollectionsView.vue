@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ref, toRefs } from 'vue';
 import * as qs from 'qs';
 
-import ProductItem from '../components/ProductItem.vue';
+import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
@@ -37,7 +37,7 @@ async function init() {
             return qs.stringify(params, {arrayFormat: 'comma'})
         }
     })
-        .then(resp => products.value = resp.data)
+        .then(resp => {products.value = resp.data, console.log(products.value)})
         .catch(e => error.value = e)
         .finally(() => isLoading.value = false)
 }
@@ -46,7 +46,7 @@ init()
 
 <template>
     <div class="d-flex h-100">
-        <filter-bar :params="_searchParams" @filter="init"/>
+        <filter-bar :params="_searchParams" @filter="init" @restore="_searchParams = new searchParams(), init()"/>
 
         <v-divider vertical />
 
@@ -57,13 +57,13 @@ init()
                 </v-col>
             </v-row>
         </v-container>
-        <v-container v-else-if="!error" class="mx-5">
+        <v-list v-else-if="!error" class="pa-5 w-100 h-100">
             <v-row no-gutters>
-                <v-col v-for="n in products" :key="n.id" cols="12" sm="3">
+                <v-col v-for="n in products" :key="n.id" cols="3">
                     <product-item :product="n" />
                 </v-col>
             </v-row>
-        </v-container>
+        </v-list>
         <error-message v-else>{{ error.message }}</error-message>
     </div>
 </template>

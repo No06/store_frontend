@@ -6,12 +6,6 @@ import { useRouter } from 'vue-router';
 import { useTokenStore } from '@/stores/token';
 import { login as axiosLogin } from '@/utils/axios';
 
-const loading = ref(false)
-const isWarning = ref(false)
-const warningMsg = ref('')
-const isError = ref(false)
-const errorMsg = ref('')
-
 const { handleSubmit } = useForm({
     validationSchema: {
         username(value: string) {
@@ -28,6 +22,9 @@ const { handleSubmit } = useForm({
         }
     },
 })
+const loading = ref(false)
+const isError = ref(false)
+const alertMsg = ref('')
 
 const username = useField('username')
 const password = useField('password')
@@ -36,26 +33,25 @@ const tokenStore = useTokenStore()
 const showPw = ref(false)
 
 const login = handleSubmit((values: any) => {
-    isWarning.value = false
+    alertMsg.value = ""
     isError.value = false;
     loading.value = true;
-    
+
     axiosLogin(JSON.stringify(values))
         .then(resp => {
             if (resp.status == 200) {
                 tokenStore.update(resp.data);
                 router.push('/')
             } else {
-                isWarning.value = true
-                warningMsg.value = resp.data
+                alertMsg.value = resp.data
             }
         })
         .catch(e => {
             const resp = e.response
             if (resp != null) {
-                errorMsg.value = resp.data
+                alertMsg.value = resp.data
             } else {
-                errorMsg.value = e.message
+                alertMsg.value = e.message
             }
             isError.value = true
         })
@@ -82,12 +78,9 @@ const login = handleSubmit((values: any) => {
                 </form>
             </v-card>
 
-            <v-alert class="mt-5" color="warning" theme="dark" icon="mdi-information" v-if=isWarning border>
-                {{ warningMsg }}
-            </v-alert>
-
-            <v-alert class="mt-5" color="error" theme="dark" icon="mdi-close-circle-outline" v-if=isError border>
-                {{ errorMsg }}
+            <v-alert v-if="alertMsg" class="mt-5" :color="isError ? 'error' : 'warning'" theme="dark"
+                :icon="isError ? 'mdi-close-circle-outline' : 'mdi-information'" border>
+                {{ alertMsg }}
             </v-alert>
         </div>
     </div>

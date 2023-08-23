@@ -34,12 +34,8 @@ watch(
 </script>
 
 <template>
-    <div class="ma-2">
-        <v-sheet
-            class="product_image_box elevation-1 rounded-lg bg-white"
-            @mouseover="isHover = true"
-            @mouseleave="isHover = false"
-        >
+    <v-sheet class="ma-2" @mouseover="isHover = true" @mouseleave="isHover = false" @click="$router.push('/products/'+product.id)" style="cursor: pointer;">
+        <v-sheet class="product_image_box elevation-1 rounded-lg bg-white">
             <img class="product_image" :src="imageSrc">
             <div v-if="product.stock <= 0" class="out_of_stock">
                 <p class="py-2">无货</p>
@@ -47,8 +43,6 @@ watch(
         </v-sheet>
         <div 
             class="product_info d-flex flex-column align-center my-2"
-            @mouseover="isHover = true"
-            @mouseleave="isHover = false"
         >
             <p class="product_name" :class="{ underline: isHover }">{{ product.name }}</p>
             <div class="product_price">
@@ -56,14 +50,13 @@ watch(
                 <p v-if="isSale" class="current_price">￥{{ Math.floor(product.price * product.discount * 100) / 100 }}</p>
             </div>
         </div>
-    </div>
+    </v-sheet>
 </template>
 
 <style lang="scss" scoped>
 .product_image_box {
     display: flex;
     align-items: end;
-    cursor: pointer;
     position: relative;
     overflow: hidden;
     .product_image {
@@ -78,7 +71,6 @@ watch(
     font-size: 20px;
     letter-spacing: 1px;
     text-underline-offset: 5px;
-    cursor: pointer;
 }
 .product_price {
     display: flex;

@@ -3,9 +3,10 @@ import AppBar from '../components/AppBar.vue';
 </script>
 
 <template>
-	<app-bar />
-	<div class="d-flex flex-column w-100 h-100 bg-surface" style="position: absolute;">
-		<app-bar style="position: static; visibility: hidden;" />
-		<router-view />
+	<div class="d-flex flex-column w-100 h-screen bg-surface">
+		<app-bar style="position: static;"/>
+		<div class="d-flex flex-column h-100" style="max-height: calc(100% - 80px);">
+			<router-view />
+		</div>
 	</div>
 </template>

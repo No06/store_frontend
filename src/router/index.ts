@@ -41,6 +41,10 @@ const router = createRouter({
 					props: {
 						url: url+"/product/getAllBySpec"
 					}
+				},
+				{
+					path: "/products/:id",
+					component: () => import('@/components/CollectionsView/ProductView.vue')
 				}
 			]
 		},

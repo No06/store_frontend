@@ -14,7 +14,7 @@ const navigationItems = [
 </script>
 
 <template>
-    <v-layout>
+    <v-layout class="h-100">
         <v-navigation-drawer style="position: relative;" permanent>
             <v-list nav :mandatory="true" select-strategy="single-independent">
                 <v-list-item 

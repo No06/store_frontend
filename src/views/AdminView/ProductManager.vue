@@ -46,9 +46,9 @@ init()
 
 <template>
     <div v-if="!error" class="d-flex flex-column w-100 pa-4">
-        <tool-bar :products="products" v-model="showPrds" @update:product="init(), snackBarMsg = '添加成功'"/>
+        <tool-bar :products="products" v-model="showPrds" @update:product="init(), showSnackBar('添加成功')"/>
 
-        <div class="w-100">
+        <v-list>
             <v-table fixed-header>
                 <thead>
                     <tr>
@@ -84,7 +84,7 @@ init()
                         @update:product="() => {init(); showSnackBar('修改成功')}"/>
                 </tbody>
             </v-table>
-        </div>
+        </v-list>
     </div>
 
     <error-message v-else>{{ error }}</error-message>

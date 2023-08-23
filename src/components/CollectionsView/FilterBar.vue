@@ -60,6 +60,7 @@ getCountProductsByCategory()
 
 <style lang="scss" scoped>
 .filter-bar {
+    position: sticky;
     min-width: 320px;
     max-width: 350px;
     display: flex;

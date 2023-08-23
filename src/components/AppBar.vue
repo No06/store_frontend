@@ -55,7 +55,7 @@ const navigationItems = [
                 size="large"
                 @click="() => {
                     if (router.currentRoute.value.path != item.path) {
-                        router.push(item.path)
+                        router.replace(item.path)
                     }
                 }"
                 rounded
@@ -105,11 +105,13 @@ const navigationItems = [
     position: fixed;
     top: 0;
     left: 0;
+    min-height: 80px;
     border-bottom: 1px solid #E0E0E0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12.5px 80px;
+    box-sizing: border-box;
     transition: 0.5s;
     z-index: 1;
     
@@ -120,15 +122,6 @@ const navigationItems = [
         text-decoration: none;
         letter-spacing: 2px;
         cursor: pointer;
-    }
-    .navigation-select {
-        $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
-        
-        font-weight: bold;
-        background-image: linear-gradient($color-primaryContainer, $color-primaryContainer);
-        background-size: 100% 40%;
-        background-clip: content-box;
-        background-position: bottom 10px right 0;
     }
 
     .button {
