@@ -39,7 +39,7 @@ function search() {
 	const isAllCategory = searchCategoryName.value === "全部";
 	const isNoKeyword = searchProductName.value === "";
 
-	modelValue.value = products.value.filter((item: Product) => {
+	modelValue.value = products.value.filter((item: any) => {
 		// 如果没有关键词，只根据分类过滤
 		if (isNoKeyword) {
 			return isAllCategory || item.category.name === searchCategoryName.value;

@@ -33,11 +33,12 @@ const { product } = toRefs(props)
                     </div>
                     <div class="d-flex mt-16 w-100">
                         <v-spacer />
-                        <v-btn color="primary" rounded="lg" size="x-large" prepend-icon="mdi-cart" elevation="5">
+                        <v-btn color="primary" rounded="lg" size="x-large" prepend-icon="mdi-cart" elevation="5"
+                            @click="$router.push('/products/' + product.id)">
                             <template v-slot:prepend>
-                                <v-icon color="" size="32"/>
+                                <v-icon color="" size="32" />
                             </template>
-                            <p class="describe">立即选购</p>
+                            <p style="font-size: 26px;">立即选购</p>
                         </v-btn>
                     </div>
                 </div>

@@ -2532,6 +2532,11 @@ vue-tsc@^1.6.5:
     "@vue/typescript" "1.8.8"
     semver "^7.3.8"
 
+vue3-image-preview@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.npmmirror.com/vue3-image-preview/-/vue3-image-preview-0.2.7.tgz#9b4a882e9effa5be79cce31da27fe392dcb2294d"
+  integrity sha512-XlHO6O8jFCz82+Q40rOfY2f2jCt+gnd3/NspqADVaAuoGP3GwTMVdU+iVkPUHQyDHlMeVSc/epNcsI1Varsadw==
+
 vue@^3.3.4:
   version "3.3.4"
   resolved "https://registry.npmmirror.com/vue/-/vue-3.3.4.tgz#8ed945d3873667df1d0fcf3b2463ada028f88bd6"

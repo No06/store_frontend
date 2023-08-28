@@ -41,9 +41,8 @@ watch(
                 <p class="py-2">无货</p>
             </div>
         </v-sheet>
-        <div 
-            class="product_info d-flex flex-column align-center my-2"
-        >
+        
+        <div class="product_info d-flex flex-column align-center my-2">
             <p class="product_name" :class="{ underline: isHover }">{{ product.name }}</p>
             <div class="product_price">
                 <p :class="{ original_price: isSale }">￥{{ product.price }}</p>
