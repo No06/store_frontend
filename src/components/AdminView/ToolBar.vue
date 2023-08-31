@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref, toRefs } from 'vue'
-import { boyerMoore } from '@/utils/boyerMorre'
+import { computed, ref } from 'vue'
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import { Product } from '@/entities/Product';
 import { useCategoryStore } from '@/stores/productCategorys';
+import axios from 'axios';
+import { getAllProductBySpec, url } from '@/utils/axios';
+import * as qs from 'qs';
 
 const props = defineProps({
-	products: {
-		type: Array,
-		required: true
-	},
 	modelValue: {
 		type: Array,
 		default: new Array
@@ -23,35 +21,32 @@ const modelValue = computed({
 	}
 })
 
-const { products } = toRefs(props)
-
 const product = ref(new Product)
-const searchProductName = ref('')
-const searchCategoryName = ref('全部')
+const searchName = ref('')
+const searchCategory = ref('全部')
+const categoryMap = new Map<string, any>()
+categoryMap.set("全部", undefined)
+useCategoryStore().categorys.forEach(item => {
+	categoryMap.set(item.name, item.id);
+})
+
+const isLoading = ref(false)
+const errorMsg = ref<any>(false)
 const alterDialog = ref(false)
 
-// 查找
-function keywordSearch(main: string, pattern: string) {
-	return boyerMoore(main.toLowerCase(), pattern.toLowerCase()) != -1
-}
 function search() {
-	// 定义常用条件
-	const isAllCategory = searchCategoryName.value === "全部";
-	const isNoKeyword = searchProductName.value === "";
+	isLoading.value = true
+	errorMsg.value = false
 
-	modelValue.value = products.value.filter((item: any) => {
-		// 如果没有关键词，只根据分类过滤
-		if (isNoKeyword) {
-			return isAllCategory || item.category.name === searchCategoryName.value;
-		}
-
-		// 如果有关键词，根据关键词和分类过滤
-		return (
-			keywordSearch(item.name, searchProductName.value) &&
-			(isAllCategory || item.category.name === searchCategoryName.value)
-		);
-	});
+	getAllProductBySpec({
+		name: searchName.value,
+		category_id: [categoryMap.get(searchCategory.value)]
+	})
+		.then(resp => modelValue.value = resp.data)
+		.catch(e => errorMsg.value = e.message)
+		.finally(() => isLoading.value = false)
 }
+search()
 </script>
 
 <template>
@@ -60,18 +55,22 @@ function search() {
 			<v-toolbar-title>数量：{{ modelValue.length }}</v-toolbar-title>
 			<v-btn class="me-2" color="primary" prepend-icon="mdi-plus" variant="flat" size="large" rounded>
 				添加
-				<product-alter-dialog lable="添加商品" :product="product" v-model="alterDialog" @update:model-value="product = new Product()"
-					@update:product="emit('update:product')"/>
+				<product-alter-dialog lable="添加商品" :product="product" v-model="alterDialog"
+					@update:model-value="product = new Product()" @update:product="emit('update:product')" />
 			</v-btn>
 		</div>
 
 		<v-form class="d-flex align-center" @submit.prevent="search">
-			<v-btn icon="mdi-magnify" variant="text" class="mr-2" type="submit" />
-			<v-combobox class="mr-5" hide-details label="类别" v-model="searchCategoryName"
+			<v-btn :loading="isLoading" icon="mdi-magnify" variant="text" class="mr-2" type="submit" />
+
+			<v-combobox class="mr-5" hide-details label="类别" v-model="searchCategory"
 				:items="['全部'].concat(useCategoryStore().getCategorysNames())" variant="solo-filled"
 				style="min-width: 150px" @update:model-value="search" />
-			<v-text-field v-model="searchProductName" class="flex-1-1-100" clearable hide-details="auto"
-				label="商品名称关键词查找" />
+			<v-text-field v-model="searchName" class="flex-1-1-100" clearable hide-details="auto" label="商品名称关键词查找" />
 		</v-form>
+
+		<v-snackbar v-model="errorMsg" color="error">
+			{{ errorMsg }}
+		</v-snackbar>
 	</div>
 </template>

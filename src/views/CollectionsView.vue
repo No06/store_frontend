@@ -1,44 +1,38 @@
 <script lang="ts" setup>
-import axios from 'axios';
-import { ref, toRefs } from 'vue';
-import * as qs from 'qs';
+import { ref } from 'vue';
 
 import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
+import { getAllProductBySpec } from '@/utils/axios';
 
 class searchParams {
+    name?: string
     inStock?: boolean
     minPrice?: number
     maxPrice?: number
     category_id: Array<number> = []
 }
 
-const props = defineProps({
+defineProps({
     url: {
         type: String,
         required: true
     }
 })
-const { url } = toRefs(props)
 
 const _searchParams = ref(new searchParams)
 const products = ref<Array<any>>()
 const isLoading = ref(true)
 const error = ref<any>(false)
 
-async function init() {
+function init() {
     isLoading.value = true
     error.value = false
-    await axios.get(url.value, {
-        params: _searchParams.value,
-        paramsSerializer: params => {
-            return qs.stringify(params, {arrayFormat: 'comma'})
-        }
-    })
-        .then(resp => {products.value = resp.data, console.log(products.value)})
-        .catch(e => error.value = e)
+    getAllProductBySpec(_searchParams.value)
+        .then(resp => products.value = resp.data)
+        .catch(e => error.value = e.message)
         .finally(() => isLoading.value = false)
 }
 init()

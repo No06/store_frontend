@@ -8,32 +8,23 @@ import ToolBar from '@/components/AdminView/ToolBar.vue';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import { Product } from '@/entities/Product';
 import { useCategoryStore } from '@/stores/productCategorys';
-import { getAllProduct, getAllProductCategory } from '@/utils/axios';
+import { getAllProductCategory } from '@/utils/axios';
 
 // 状态
 const isLoading = ref(true)
 const error = ref("")
 const snackBar = ref(false)
 const snackBarMsg = ref()
-const products = ref(new Array<Product>)
 const showPrds = ref(new Array<Product>)
 const categoryStore = useCategoryStore()
 
 async function init() {
     isLoading.value = true
     error.value = ""
-    await Promise.all([
-        getAllProduct()
-            .then(resp => {
-                products.value = resp.data
-                showPrds.value = [].concat(resp.data)
-            }),
-
-        getAllProductCategory()
-            .then(resp => {
-                categoryStore.categorys = resp.data
-            })
-    ])
+    getAllProductCategory()
+        .then(resp => {
+            categoryStore.categorys = resp.data
+        })
         .catch(e => error.value = e.message)
         .finally(() => isLoading.value = false)
 }
@@ -46,7 +37,7 @@ init()
 
 <template>
     <div v-if="!error" class="d-flex flex-column w-100 pa-4">
-        <tool-bar :products="products" v-model="showPrds" @update:product="init(), showSnackBar('添加成功')"/>
+        <tool-bar v-model="showPrds" @update:product="init(), showSnackBar('添加成功')" />
 
         <v-list>
             <v-table fixed-header>
@@ -80,8 +71,9 @@ init()
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr-item v-for="(item, i) in showPrds" :key="i" :product="item" @delete:product="init, showSnackBar('修改成功')"
-                        @update:product="() => {init(); showSnackBar('修改成功')}"/>
+                    <tr-item v-for="(item, i) in showPrds" :key="i" :product="item"
+                        @delete:product="init, showSnackBar('修改成功')"
+                        @update:product="() => { init(); showSnackBar('修改成功') }" />
                 </tbody>
             </v-table>
         </v-list>
@@ -89,7 +81,7 @@ init()
 
     <error-message v-else>{{ error }}</error-message>
     <v-snackbar v-model="snackBar" color="success">
-        <v-icon icon="mdi-check" class="mr-2"/>
+        <v-icon icon="mdi-check" class="mr-2" />
         {{ snackBarMsg }}
     </v-snackbar>
 </template>
