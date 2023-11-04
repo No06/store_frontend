@@ -1,5 +1,5 @@
-export class ProductCategory {
-    id?: number
+export class ProductCategoryVO {
+    id!: number
     name: string = ""
     description: string = ""
 }

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Product } from '@/entities/Product';
-import { toRefs } from 'vue';
+import type { ProductItemVO } from '@/entities/ProductItemVO';
+import { toRefs, type PropType } from 'vue';
 
 const props = defineProps({
     product: {
-        type: Product,
+        type: Object as PropType<ProductItemVO>,
         required: true
     },
     title: String,
@@ -18,7 +18,7 @@ const { product } = toRefs(props)
     <v-carousel-item>
         <v-sheet height="100%" width="100%" class="d-flex">
             <div class="image-box" style="flex: 1;">
-                <img :src="product.images[0].image_url" class="image" />
+                <img :src="product.image.image_url" class="image" />
             </div>
 
             <div class="font-wlcmg d-flex align-center" style="flex: 1">
@@ -81,4 +81,4 @@ $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
     font-family: "jf-openhuninn";
     color: #7F7E7D;
 }
-</style>
+</style>@/entities/ProductVO

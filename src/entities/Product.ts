@@ -1,13 +1,13 @@
-import { ProductCategory } from "./ProductCategory";
+import { ProductCategoryVO } from "./ProductCategoryVO";
 import type { ProductImage } from "./ProductImage";
 
 export class Product {
-    id?: number
+    id!: number;
     name: string = ""
     price: number = 0
     discount: number = 1
     stock: number = 0
     description: string = ""
-    category: ProductCategory = new ProductCategory
+    category: ProductCategoryVO = new ProductCategoryVO
     images: Array<ProductImage> = new Array<ProductImage>
 }

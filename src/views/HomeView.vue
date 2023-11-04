@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import CarouselProduct from '@/components/HomeView/CarouselProduct.vue';
-import type { Product } from '@/entities/Product';
-import { getProductById } from '@/utils/axios';
+import type { ProductItemVO } from '@/entities/ProductItemVO';
+import { getProductItemById } from '@/utils/axios';
 import { ref } from 'vue';
 
-const products = ref(new Array<Product>)
+const products = ref(new Array<ProductItemVO>)
 const products_des = [
     {
         title: "秘鲁进口牛油果",
@@ -24,11 +24,11 @@ function addProduct(product: any, index: number) {
     products.value.splice(index, 0, product)
 }
 function init() {
-    const products_id = ["44", "39"]
+    const products_id = [44, 39]
     isLoadding.value = true
     errorMsg.value = ""
     Promise.all(
-        products_id.map((id, index) => getProductById(id).then(resp => addProduct(resp.data, index)))
+        products_id.map((id, index) => getProductItemById(id).then(resp => addProduct(resp.data, index)))
     )
         .catch(e => errorMsg.value = e.message)
         .finally(() => isLoadding.value = false)
@@ -49,4 +49,4 @@ init()
     <error-message v-else class="h-100">{{ errorMsg }}</error-message>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped></style>@/entities/ProductVO

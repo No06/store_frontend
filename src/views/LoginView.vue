@@ -6,19 +6,18 @@ import { useRouter } from 'vue-router';
 import { useTokenStore } from '@/stores/token';
 import { login as axiosLogin } from '@/utils/axios';
 
+const usernameLimit = 16
+const passwordLimit = 30
+
 const { handleSubmit } = useForm({
     validationSchema: {
         username(value: string) {
-            if (value.length >= 2) {
-                if (value.length <= 16) return true
-                return "长度超出限制"
-            }
-            return '用户名至少需要2位数'
+            if (value.length <= 2) return '用户名至少需要2位数'
+            return true
         },
         password(value: string) {
-            if (value.length >= 30) return "长度超出限制"
-            if (value != null && value != "") return true
-            return '密码不能为空'
+            if (value == null || value == "") return '密码不能为空'
+            return true;
         }
     },
 })
@@ -41,7 +40,7 @@ const login = handleSubmit((values: any) => {
         .then(resp => {
             if (resp.status == 200) {
                 tokenStore.update(resp.data);
-                router.push('/')
+                router.back()
             } else {
                 alertMsg.value = resp.data
             }
@@ -67,9 +66,9 @@ const login = handleSubmit((values: any) => {
                     登录
                 </v-card-title>
                 <form @submit.prevent="login">
-                    <v-text-field v-model="username.value.value" :counter="16" :error-messages="username.errorMessage.value"
+                    <v-text-field v-model="username.value.value" counter :maxlength="usernameLimit" :error-messages="username.errorMessage.value" 
                         label="账号" />
-                    <v-text-field v-model="password.value.value" :counter="30" :error-messages="password.errorMessage.value"
+                    <v-text-field v-model="password.value.value" counter :maxlength="passwordLimit" :error-messages="password.errorMessage.value"
                         label="密码" :append-inner-icon="showPw ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="showPw ? 'text' : 'password'" @click:append-inner="showPw = !showPw" />
                     <v-btn block :loading="loading" size="large" variant="elevated" type="submit" color="blue-darken-3">

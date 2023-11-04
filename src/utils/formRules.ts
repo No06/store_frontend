@@ -1,5 +1,5 @@
 export const nonull = (value: String | Array<any>) => {
-	if (value == null || value.length == 0) return '必须填写'
+	if (value == null || value == undefined || value.length == 0) return '必须填写'
 	return true
 }
 export const integer = (value: any) => {

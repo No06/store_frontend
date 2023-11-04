@@ -18,13 +18,14 @@ getCountProductsByCategory()
 </script>
 
 <template>
-    <v-list class="filter-bar px-10 py-8">
+    <v-list class="filter-bar px-10 py-8 h-100">
         <div>
             <span class="title">过滤</span>
 
             <v-list-subheader title="商品名" />
             <v-list-item>
-                <v-text-field v-model="params!.name" density="compact" placeholder="关键词查找" variant="outlined" hide-details/>
+                <v-text-field v-model="params!.name" density="compact" placeholder="关键词查找" variant="outlined"
+                    hide-details />
             </v-list-item>
 
             <v-list-subheader title="库存" />
@@ -68,12 +69,8 @@ getCountProductsByCategory()
 
 <style lang="scss" scoped>
 .filter-bar {
-    position: sticky;
     min-width: 320px;
     max-width: 350px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     .title {
         font-size: xx-large;

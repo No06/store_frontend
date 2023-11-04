@@ -6,23 +6,23 @@ import { nonull, integer, postive, price } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
 import { ProductImage } from '@/entities/ProductImage';
-import { useCategoryStore } from '@/stores/productCategorys';
+import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
+import { Product } from '../../entities/Product';
 
 // 参数
 const props = defineProps({
     product: {
         type: Object,
-        required: true
+        default: Product
     },
     categorys: Array
 })
-const emit = defineEmits(['submit', 'update:modelValue'])
+const emit = defineEmits(['submit'])
 
 const isValidated = ref(false)
 const imageDeleteDialog = ref(false)
 const product = toRef(props, 'product')
 const _discount = ref<Number>(product.value.discount * 100)
-const categoryStore = useCategoryStore()
 
 // 表单规则
 const discount = (value: any) => {
@@ -40,24 +40,20 @@ function imageAdd(url: string) {
     }
     product.value.images.push(product_image)
 }
-// 查询商品类id
-function categoryUpdate() {
-    categoryStore.categorys.forEach((item) => {
-        if (item.name == product.value.category.name) {
-            product.value.category.id = item.id
-        }
-    })
+const mustSelectedRule = (value: ProductCategoryVO) => {
+    if (value.id == undefined) return "不能为空"
+    return true
 }
 </script>
 
 // TODO:表单验证
 <template>
-    <v-form @submit.prevent="() => { if (isValidated) emit('submit') }" v-model="isValidated" required>
+    <v-form @submit.prevent="() => { if (isValidated) emit('submit', product) }" v-model="isValidated" required>
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
-                <v-select label="类别" :items="categorys" v-model="product.category.name" :rules="[nonull]"
-                    @update:model-value="categoryUpdate" />
+                <v-select label="类别" v-model="product.category" :items="categorys" item-title="name" item-value="id"
+                    :rules="[mustSelectedRule]" return-object />
             </v-col>
             <v-col cols="12" sm="6" md="6">
                 <v-text-field label="商品名" v-model="product.name" :rules="[nonull]" />
@@ -72,8 +68,7 @@ function categoryUpdate() {
                     ' = ' + Math.floor(product.price * product.discount * 100) / 100" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格" v-model="product.price" type="number" required
-                    :rules="[nonull, postive, price]" />
+                <v-text-field label="价格" v-model="product.price" type="number" required :rules="[nonull, postive, price]" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
                 <v-text-field label="折扣（%）" v-model="_discount" :counter="3" type="number"
@@ -97,9 +92,9 @@ function categoryUpdate() {
                 </div>
                 <v-list lines="one">
                     <draggable :list="product.images" item-key="rank">
-                        <template #item="{element, index}">
-                            <v-list-item :title="element.image_url" :key="index"
-                                variant="tonal" class="mb-2" rounded style="cursor: pointer">
+                        <template #item="{ element, index }">
+                            <v-list-item :title="element.image_url" :key="index" variant="tonal" class="mb-2" rounded
+                                style="cursor: pointer">
                                 <template v-slot:prepend>
                                     <v-img :width="50" aspect-ratio="1/1" cover :src="element.image_url" class="mr-3" />
                                 </template>

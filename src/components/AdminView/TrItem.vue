@@ -4,36 +4,41 @@ import { ref } from 'vue';
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import LoadingDialog from '../Dialog/LoadingDialog.vue';
-import ErrorDialog from '../Dialog/ErrorDialog.vue';
-import { delProductById } from '@/utils/axios';
-import { useTokenStore } from '@/stores/token';
+import { Product } from '../../entities/Product';
+import { getProductById } from '../../utils/axios';
+import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
 
 const props = defineProps({
     product: {
         type: Object,
         required: true
-    }
+    },
+    categorys: {
+        type: Array<ProductCategoryVO>,
+        required: true
+    },
 })
-const emit = defineEmits(['update:product', 'delete:product'])
+const emit = defineEmits(['updated', 'deleted', 'error'])
 
-const alterDialog = ref(false)
-const deleteDialog = ref(false)
+const _product = ref<Product>();
 const isLoading = ref(false)
-const errorMsg = ref("")
-const tokenStore = useTokenStore()
+const deleteWarningDialog = ref(false)
+const showDialog = ref(false)
 
-function submit() {
+function emitDeleted() {
+    emit('deleted', props.product)
+    deleteWarningDialog.value = false
+}
+
+function getFullProduct() {
     isLoading.value = true
-    errorMsg.value = ''
-    delProductById(props.product.id, tokenStore.token)
-        .then(() => {
+
+    getProductById(props.product.id)
+        .then((resp) => _product.value = resp.data)
+        .catch((e) => emit('error', e))
+        .finally(() => {
             isLoading.value = false
-            deleteDialog.value = false
-            emit('delete:product')
-        }).catch(e => {
-            errorMsg.value = e.message
-        }).finally(() => {
-            isLoading.value = false
+            showDialog.value = true
         })
 }
 </script>
@@ -46,15 +51,15 @@ function submit() {
         <td>{{ product.stock }}</td>
         <td>{{ product.category.name }}</td>
         <td>
-            <v-btn variant="text" icon="mdi-pencil" size="small">
-                <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <product-alter-dialog lable="修改商品信息" :product="product" v-model="alterDialog" @update:product="emit('update:product')"/>
+            <v-btn variant="text" icon="mdi-pencil" size="small" @click="getFullProduct">
+                <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true" />
+                <product-alter-dialog v-if="!isLoading" v-model="showDialog" lable="修改商品信息" :product="_product!" :categorys="categorys"
+                    @submit="emit('updated', _product)" />
+                <loading-dialog v-model="isLoading" title="正在获取数据" />
             </v-btn>
             <v-btn variant="text" icon="mdi-delete" size="small">
-                <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true"/>
-                <warning-dialog v-if="!isLoading && !errorMsg" v-model="deleteDialog" title="确定要删除这件商品吗？" @submit="submit"/>
-                <loading-dialog v-else-if="!errorMsg" v-model="deleteDialog" title="请求中"/>
-                <error-dialog v-else v-model="deleteDialog" :title="errorMsg" @submit="errorMsg = ''"/>
+                <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default" aria-hidden="true" />
+                <warning-dialog v-model="deleteWarningDialog" title="确定要删除这件商品吗？" @submit="emitDeleted" />
             </v-btn>
         </td>
     </tr>

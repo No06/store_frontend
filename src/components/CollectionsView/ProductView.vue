@@ -29,7 +29,7 @@ function init() {
     } else {
         str = route.params.id
     }
-    getProductById(str)
+    getProductById(parseInt(str))
         .then(resp => {
             product.value = resp.data
             selectedImage.value = product.value.images[0]
@@ -57,93 +57,98 @@ init()
 </script>
 
 <template>
-    <div v-if="!errorMsg" class="d-flex flex-column h-100 mx-16 my-8">
-        <div class="d-flex mx-16 mb-8" style="font-size: 24px;">
-            <div class="d-flex align-center" style="cursor: pointer;" @mouseover="isHover = true"
-                @mouseleave="isHover = false" @click="$router.back">
-                <v-icon icon="mdi-menu-left" class="backup-transition" :class="{ 'backup-hover': isHover }" />
-                返回购物
+    <v-list v-if="!errorMsg" class="h-100">
+        <div class="d-flex flex-column h-100 px-16 py-8" style="min-height: 600px;">
+            <div class="d-flex mx-16 mb-8" style="font-size: 24px;">
+                <div class="d-flex align-center" style="cursor: pointer;" @mouseover="isHover = true"
+                    @mouseleave="isHover = false" @click="$router.back">
+                    <v-icon icon="mdi-menu-left" class="backup-transition" :class="{ 'backup-hover': isHover }" />
+                    返回购物
+                </div>
+                <v-spacer />
             </div>
-            <v-spacer></v-spacer>
-        </div>
 
-        <div class="d-flex align-center w-100 h-100">
-            <!-- 图片 -->
-            <div class="d-flex align-center h-100 w-100 mx-8">
-                <!-- 预览条 -->
-                <div class="d-flex flex-column align-center mr-8 my-16">
-                    <v-btn icon="mdi-menu-up" variant="text" style="font-size: 1.5rem; color: #424242;" @click="preImg" />
-                    <v-list class="my-2 pa-2 bg-white elevation-5 align-center rounded-lg"
-                        style="max-height: 100%; overflow: hidden;">
-                        <v-card v-for="image, index in product.images ?? null" :key="index"
-                            :elevation="imageIndex == index ? 3 : 0" class="my-2" transition="fade-transition"
-                            style="cursor: pointer;" @click="() => { imageIndex = index; selectedImage = image }">
-                            <v-img width="100" aspect-ratio="1/1" :src="image.image_url" cover />
-                        </v-card>
-                    </v-list>
-                    <v-btn icon="mdi-menu-down" variant="text" style="font-size: 1.5rem; color: #424242;" @click="nextImg"/>
+            <div class="d-flex align-center w-100 h-100">
+                <!-- 图片 -->
+                <div class="d-flex align-center h-100 w-100 mx-8">
+                    <!-- 预览条 -->
+                    <div class="d-flex flex-column align-center mr-8 my-16">
+                        <v-btn icon="mdi-menu-up" variant="text" style="font-size: 1.5rem; color: #424242;"
+                            @click="preImg" />
+                        <v-list class="my-2 pa-2 elevation-3 align-center rounded-lg"
+                            style="max-height: 100%; overflow: hidden;">
+                            <v-card v-for="image, index in product.images ?? null" :key="index"
+                                :elevation="imageIndex == index ? 8 : 0" class="my-2" transition="fade-transition"
+                                style="cursor: pointer;" @click="() => { imageIndex = index; selectedImage = image }">
+                                <v-img width="100" aspect-ratio="1/1" :src="image.image_url" cover />
+                            </v-card>
+                        </v-list>
+                        <v-btn icon="mdi-menu-down" variant="text" style="font-size: 1.5rem; color: #424242;"
+                            @click="nextImg" />
+                    </div>
+                    <!-- 大图 -->
+                    <div class="d-flex align-center w-100 h-auto rounded-lg border" style="overflow: hidden;">
+                        <v-img v-if="!isLoadding" v-preview aspect-ratio="1/1" cover :src="selectedImage?.image_url"
+                            @click="preview({ images: selectedImage?.image_url })" style="cursor: zoom-in;" />
+                        <v-skeleton-loader v-else class="w-100 h-100" color="#E0E0E0" />
+                    </div>
                 </div>
-                <!-- 大图 -->
-                <div class="d-flex align-center w-100 h-auto rounded-lg border" style="overflow: hidden;">
-                    <v-img v-if="!isLoadding" v-preview aspect-ratio="1/1" cover :src="selectedImage?.image_url"
-                        @click="preview({ images: selectedImage?.image_url })" style="cursor: zoom-in;" />
-                    <v-skeleton-loader v-else class="w-100 h-100" color="#E0E0E0" />
-                </div>
-            </div>
-            <!-- 详细信息 -->
-            <div class="info d-flex flex-column w-100 h-100 mx-8">
-                <div class="mb-8">
-                    <v-skeleton-loader :loading="isLoadding" type="list-item-two-line">
-                        <div class="d-flex flex-column align-start">
-                            <!-- 商品名 -->
-                            <p class="title">{{ product.name }}</p>
-                            <!-- 价格 -->
-                            <div class="price">
-                                <span :class="{ original_price: product.discount != 1 }">￥{{ product.price }}</span>
-                                <span v-if="product.discount != 1" class="current_price">￥{{ Math.floor(product.price *
-                                    product.discount * 100) / 100 }}</span>
+                <!-- 详细信息 -->
+                <div class="info d-flex flex-column w-100 h-100 mx-8">
+                    <div class="mb-8">
+                        <v-skeleton-loader :loading="isLoadding" type="list-item-two-line">
+                            <div class="d-flex flex-column align-start">
+                                <!-- 商品名 -->
+                                <p class="title">{{ product.name }}</p>
+                                <!-- 价格 -->
+                                <div class="price">
+                                    <span :class="{ original_price: product.discount != 1 }">￥{{ product.price }}</span>
+                                    <span v-if="product.discount != 1" class="current_price">￥{{ Math.floor(product.price *
+                                        product.discount * 100) / 100 }}</span>
+                                </div>
                             </div>
+                        </v-skeleton-loader>
+                    </div>
+
+                    <div class="d-flex justify-space-between my-8">
+                        <div>
+                            <span class="subtitle">购买数量</span>
+                            <v-text-field v-model="count" class="centered-input mt-2" type="number" density="comfortable"
+                                variant="outlined" single-line aria-hidden style="max-width: 150px;">
+                                <template v-slot:prepend-inner>
+                                    <v-btn icon="mdi-minus" density="comfortable" variant="text"
+                                        @click="() => { if (count > 1) count -= 1 }" />
+                                </template>
+                                <template v-slot:message>
+                                    <h1>a</h1>
+                                </template>
+                                <template v-slot:append-inner>
+                                    <v-btn icon="mdi-plus" density="comfortable" variant="text" @click="count++" />
+                                </template>
+                            </v-text-field>
                         </div>
-                    </v-skeleton-loader>
-                </div>
 
-                <div class="d-flex justify-space-between my-8">
-                    <div>
-                        <span class="subtitle">购买数量</span>
-                        <v-text-field v-model="count" class="centered-input mt-2" type="number" density="comfortable"
-                            variant="outlined" single-line aria-hidden style="max-width: 150px;">
-                            <template v-slot:prepend-inner>
-                                <v-btn icon="mdi-minus" density="comfortable" variant="text"
-                                    @click="() => { if (count > 1) count -= 1 }" />
-                            </template>
-                            <template v-slot:message>
-                                <h1>a</h1>
-                            </template>
-                            <template v-slot:append-inner>
-                                <v-btn icon="mdi-plus" density="comfortable" variant="text" @click="count++" />
-                            </template>
-                        </v-text-field>
+                        <div class="d-flex flex-column-reverse h-100">
+                            <v-btn size="x-large" color="primary" rounded="lg" prepend-icon="mdi-cart" style="bottom: 0;"
+                                :disabled="product.stock == 0">
+                                <template v-slot:prepend>
+                                    <v-icon size="large"></v-icon>
+                                </template>
+                                {{ product.stock == 0 ? "无货" : "添加至购物车" }}
+                            </v-btn>
+                        </div>
                     </div>
-
-                    <div class="d-flex flex-column-reverse h-100">
-                        <v-btn size="x-large" color="primary" rounded="lg" prepend-icon="mdi-cart" style="bottom: 0;"
-                            :disabled="product.stock == 0">
-                            <template v-slot:prepend>
-                                <v-icon size="large"></v-icon>
-                            </template>
-                            {{ product.stock == 0 ? "无货" : "添加至购物车" }}
-                        </v-btn>
+                    <!-- 商品描述 -->
+                    <div v-if="!isLoadding" class="my-8">
+                        <v-expansion-panels v-model="description">
+                            <v-expansion-panel title="描述" :text=product.description />
+                        </v-expansion-panels>
                     </div>
-                </div>
-                <!-- 商品描述 -->
-                <div v-if="!isLoadding" class="my-8">
-                    <v-expansion-panels v-model="description">
-                        <v-expansion-panel title="描述" :text=product.description />
-                    </v-expansion-panels>
                 </div>
             </div>
         </div>
-    </div>
+    </v-list>
+
     <error-message v-else class="h-100">
         {{ errorMsg }}
     </error-message>
@@ -161,11 +166,10 @@ init()
     .price {
         display: flex;
         align-items: center;
-        color: black;
+        color:crimson;
 
         .original_price {
-            color: black;
-            opacity: .5;
+            color: grey;
             text-decoration: line-through;
             font-size: large;
             margin-right: 5px;
@@ -188,4 +192,4 @@ init()
 .backup-hover {
     padding-right: 1rem;
 }
-</style>
+</style>@/entities/ProductVO@/entities/Product

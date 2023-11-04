@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, toRefs, watch } from 'vue';
+import type { ProductItemVO } from '../../entities/ProductItemVO';
+import type { PropType } from 'vue';
 
 const props = defineProps({
     product: {
-      type: Object,
+      type: Object as PropType<ProductItemVO>,
       required: true
     }
 })
@@ -16,7 +18,7 @@ const isHover = ref(false)
 const isSale = product.value.discount != 1;
 
 try {
-    imageSrc.value = product.value.images[0].image_url
+    imageSrc.value = product.value.image.image_url
 } catch {
     isError.value = true
 }
@@ -102,4 +104,4 @@ watch(
     backdrop-filter: blur(2px);
     font-size: x-large;
 }
-</style>
+</style>../../entities/ProductItemVO

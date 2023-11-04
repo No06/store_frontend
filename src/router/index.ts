@@ -70,16 +70,15 @@ function getParentPath(path: string) {
 }
 router.beforeEach(async (to, from, next) => {
 	const tokenStore = useTokenStore()
-
+	// 如果不是/login页面并且存有token，则验证token有效性
 	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && tokenStore.token != null) {
 		await checkToken(tokenStore.token)
-			.then(resp => {
-				if (!resp.data) {
-					tokenStore.remove()
-				}
-			})
+			.then()
 			.catch(tokenStore.remove)
+		next()
+		return
 	}
+	// 必须需要token才可以进入的页面
 	if (needTokenPaths.has(getParentPath(to.path)) && tokenStore.token == null) {
 		next("/login")
 		return
