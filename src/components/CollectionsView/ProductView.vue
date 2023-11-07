@@ -1,27 +1,30 @@
 <script lang="ts" setup>
 import { Product } from '@/entities/Product';
 import ErrorMessage from '@/components/ErrorMessage.vue';
-import { getProductById } from '@/utils/axios';
+import { addCart, getProductById } from '@/utils/axios';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ProductImage } from '@/entities/ProductImage';
 import { preview, vPreview } from 'vue3-image-preview';
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
+import { useTokenStore } from '../../stores/token_store';
+import router from '../../router/index';
+import { useSnackBarStore } from '../../stores/snack_bar_store';
 
 const route = useRoute()
 
 const product = ref(new Product)
 const isLoadding = ref(false)
-const errorMsg = ref("")
 const count = ref(1)
 const selectedImage = ref<ProductImage>()
 const imageIndex = ref(0)
 const isHover = ref(false)
 const description = ref([0])
+const tokenStore = useTokenStore();
+const snackBarStore = useSnackBarStore();
 
 function init() {
     isLoadding.value = true
-    errorMsg.value = ""
 
     var str: string;
     if (Array.isArray(route.params.id)) {
@@ -34,7 +37,7 @@ function init() {
             product.value = resp.data
             selectedImage.value = product.value.images[0]
         })
-        .catch(e => errorMsg.value = e.message)
+        .catch(e => snackBarStore.errorMsg = e.message)
         .finally(() => isLoadding.value = false)
 }
 function preImg() {
@@ -53,11 +56,22 @@ function nextImg() {
     }
     selectedImage.value = product.value.images[imageIndex.value]
 }
+function addToCart() {
+    const product_id = product.value.id
+    const token = tokenStore.token;
+    if (token == null || token == undefined) {
+        router.push("/login")
+        return
+    }
+    addCart(product_id, count.value, token)
+        .then(() => snackBarStore.successMsg = "添加成功")
+        .catch(e => snackBarStore.errorMsg = "发生错误：" + e.message)
+}
 init()
 </script>
 
 <template>
-    <v-list v-if="!errorMsg" class="h-100">
+    <v-list v-if="!snackBarStore.showErrorSnackBar" class="h-100">
         <div class="d-flex flex-column h-100 px-16 py-8" style="min-height: 600px;">
             <div class="d-flex mx-16 mb-8" style="font-size: 24px;">
                 <div class="d-flex align-center" style="cursor: pointer;" @mouseover="isHover = true"
@@ -119,9 +133,6 @@ init()
                                     <v-btn icon="mdi-minus" density="comfortable" variant="text"
                                         @click="() => { if (count > 1) count -= 1 }" />
                                 </template>
-                                <template v-slot:message>
-                                    <h1>a</h1>
-                                </template>
                                 <template v-slot:append-inner>
                                     <v-btn icon="mdi-plus" density="comfortable" variant="text" @click="count++" />
                                 </template>
@@ -130,7 +141,7 @@ init()
 
                         <div class="d-flex flex-column-reverse h-100">
                             <v-btn size="x-large" color="primary" rounded="lg" prepend-icon="mdi-cart" style="bottom: 0;"
-                                :disabled="product.stock == 0">
+                                :disabled="product.stock == 0" @click="addToCart">
                                 <template v-slot:prepend>
                                     <v-icon size="large"></v-icon>
                                 </template>
@@ -148,9 +159,9 @@ init()
             </div>
         </div>
     </v-list>
-
+    
     <error-message v-else class="h-100">
-        {{ errorMsg }}
+        {{ snackBarStore.errorMsg }}
     </error-message>
 </template>
 
@@ -166,7 +177,7 @@ init()
     .price {
         display: flex;
         align-items: center;
-        color:crimson;
+        color: crimson;
 
         .original_price {
             color: grey;
@@ -192,4 +203,4 @@ init()
 .backup-hover {
     padding-right: 1rem;
 }
-</style>@/entities/ProductVO@/entities/Product
+</style>@/entities/ProductVO@/entities/Product../../stores/token_store

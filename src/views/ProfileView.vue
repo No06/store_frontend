@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTokenStore } from '@/stores/token';
+import { useTokenStore } from '@/stores/token_store';
 
 const tokenStore = useTokenStore()
 const decodeToken = tokenStore.decodeToken()
@@ -33,4 +33,4 @@ const decodeToken = tokenStore.decodeToken()
             />
         </v-expansion-panels>
     </div>
-</template>
+</template>@/stores/token_store

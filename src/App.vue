@@ -1,5 +1,19 @@
+<script lang="ts" setup>
+import { useSnackBarStore } from './stores/snack_bar_store';
+
+const snackBarStore = useSnackBarStore()
+</script>
+
 <template>
   <router-view/>
+  <v-snackbar v-model="snackBarStore.showErrorSnackBar" color="error">
+      <v-icon icon='mdi-close-circle-outline' class="mr-2" />
+      {{ snackBarStore.errorMsg }}
+  </v-snackbar>
+  <v-snackbar v-model="snackBarStore.showSuccessSnackBar" color="success">
+      <v-icon icon='mdi-check' class="mr-2" />
+      {{ snackBarStore.successMsg }}
+  </v-snackbar>
 </template>
 
 <style>

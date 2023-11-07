@@ -12,7 +12,7 @@ import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
 import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
-import { useTokenStore } from '../../stores/token';
+import { useTokenStore } from '../../stores/token_store';
 
 // 状态
 const count = ref(0)
@@ -71,7 +71,7 @@ function searchOnly() {
 }
 async function save(product: Product) {
     isSubmitted.value = true
-    await saveProduct(product, tokenStore.token)
+    await saveProduct(product, tokenStore.token ?? undefined)
         .then(() => showSnackBar('添加成功'))
         .catch(e => {
             errorDialogMsg.value = e.message
@@ -81,9 +81,10 @@ async function save(product: Product) {
     init()
 }
 async function delProduct(product: Product) {
+    count.value -= 1
     isSubmitted.value = true
 
-    await delProductById(product.id, tokenStore.token)
+    await delProductById(product.id, tokenStore.token ?? undefined)
         .then(() => showSnackBar('删除成功'))
         .catch(e => errorDialogMsg.value = e.message)
         .finally(() => isSubmitted.value = false)
@@ -163,4 +164,4 @@ init()
         <v-icon icon="mdi-check" class="mr-2" />
         {{ snackBarMsg }}
     </v-snackbar>
-</template>@/entities/Product
+</template>

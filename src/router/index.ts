@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useTokenStore } from '@/stores/token';
+import { useTokenStore } from '@/stores/token_store';
 import { checkToken, url } from '@/utils/axios';
 
 const router = createRouter({
@@ -43,8 +43,12 @@ const router = createRouter({
 					}
 				},
 				{
-					path: "/products/:id",
+					path: "/product/:id",
 					component: () => import('@/components/CollectionsView/ProductView.vue')
+				},
+				{
+					path: "/cart",
+					component: () => import('@/views/CartView.vue')
 				}
 			]
 		},
@@ -59,7 +63,8 @@ const router = createRouter({
 // 访问前需要登录的路由（敏感页面）
 const needTokenPaths = new Set([
 	"/profile",
-	"/admin"
+	"/admin",
+	"/cart"
 ])
 // 不进行token校验的路由
 const tokenCheckExcludePaths = new Set([
@@ -70,16 +75,15 @@ function getParentPath(path: string) {
 }
 router.beforeEach(async (to, from, next) => {
 	const tokenStore = useTokenStore()
+	const token = tokenStore.token
 	// 如果不是/login页面并且存有token，则验证token有效性
-	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && tokenStore.token != null) {
-		await checkToken(tokenStore.token)
-			.then()
-			.catch(tokenStore.remove)
+	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && token != null) {
+		await checkToken(token).catch(tokenStore.remove)
 		next()
 		return
 	}
 	// 必须需要token才可以进入的页面
-	if (needTokenPaths.has(getParentPath(to.path)) && tokenStore.token == null) {
+	if (needTokenPaths.has(getParentPath(to.path)) && token == null) {
 		next("/login")
 		return
 	}

@@ -19,6 +19,7 @@ const modelValue = computed({
 })
 
 function submit() {
+    modelValue.value = false
     emit('submit')
 }
 </script>

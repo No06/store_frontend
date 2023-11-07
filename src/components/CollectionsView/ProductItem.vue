@@ -36,7 +36,7 @@ watch(
 </script>
 
 <template>
-    <v-sheet class="ma-2" @mouseover="isHover = true" @mouseleave="isHover = false" @click="$router.push('/products/'+product.id)" style="cursor: pointer;">
+    <v-sheet class="ma-2" @mouseover="isHover = true" @mouseleave="isHover = false" @click="$router.push('/product/'+product.id)" style="cursor: pointer;">
         <v-sheet class="product_image_box elevation-1 rounded-lg bg-white">
             <img class="product_image" :src="imageSrc">
             <div v-if="product.stock <= 0" class="out_of_stock">

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 
-import { useTokenStore } from '@/stores/token';
+import { useTokenStore } from '@/stores/token_store';
 
 const router = useRouter()
 
@@ -65,32 +65,30 @@ const navigationItems = [
         </div>
 
         <div class="d-flex flex-row-reverse">
-            <div>
-                <v-btn v-if="token != null" class="button bg-primary text-none rounded-lg" size="large" prepend-icon="mdi-account">
-                    {{ tokenStore.decodeToken().username }}
+            <v-btn v-if="token != null" class="button bg-primary text-none rounded-lg" size="large" prepend-icon="mdi-account">
+                {{ tokenStore.decodeToken().username }}
 
-                    <v-menu activator="parent">
-                        <v-list>
-                            <v-list-item
-                                v-for="(item, i) in dropDownItems"
-                                :key="i"
-                                @click="item.onClicked"
-                            >
-                                <v-list-item-title>{{ item.title }}</v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-                </v-btn>
-                
-                <v-btn v-else class="button elevation-3" size="large" rounded @click="router.push('/login')">
-                    登录
-                </v-btn>
-            </div>
+                <v-menu activator="parent">
+                    <v-list>
+                        <v-list-item
+                            v-for="(item, i) in dropDownItems"
+                            :key="i"
+                            @click="item.onClicked"
+                        >
+                            <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </v-btn>
+            
+            <v-btn v-else class="button elevation-3" size="large" rounded @click="router.push('/login')">
+                登录
+            </v-btn>
+
             <v-divider vertical class="mx-6"></v-divider>
-            <v-row class="flex-row-reverse" align="center" justify="center">
-                <v-btn icon="mdi-cart" variant="text"/>
-                <v-btn icon="mdi-magnify" variant="text"/>
-            </v-row>
+
+            <v-btn variant="text" icon="mdi-cart" @click="router.push('/cart')">
+            </v-btn>
         </div>
     </div>
 </template>
@@ -102,7 +100,6 @@ const navigationItems = [
 }
 
 .appbar {
-    position: fixed;
     top: 0;
     left: 0;
     min-height: 80px;
@@ -125,6 +122,7 @@ const navigationItems = [
     }
 
     .button {
+        align-self: center;
         font-weight: 600;
         padding: 0 20px;
         font-size: 18px;

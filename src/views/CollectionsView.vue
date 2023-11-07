@@ -7,6 +7,7 @@ import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 import { getAllProdItemsBySpec } from '@/utils/axios';
 import type { ProductItemVO } from '@/entities/ProductItemVO';
+import { useSnackBarStore } from '../stores/snack_bar_store';
 
 class searchParams {
     name?: string
@@ -26,14 +27,13 @@ defineProps({
 const _searchParams = ref(new searchParams)
 const products = ref<Array<ProductItemVO>>()
 const isLoading = ref(true)
-const error = ref<any>(false)
+const snackBar = useSnackBarStore()
 
 function init() {
     isLoading.value = true
-    error.value = false
     getAllProdItemsBySpec(_searchParams.value)
         .then(resp => products.value = resp.data)
-        .catch(e => error.value = e.message)
+        .catch(e => snackBar.errorMsg = e.message)
         .finally(() => isLoading.value = false)
 }
 init()
@@ -52,13 +52,13 @@ init()
                 </v-col>
             </v-row>
         </v-container>
-        <v-list v-else-if="!error" class="pa-5 w-100 h-100">
+        <v-list v-else-if="!snackBar.showErrorSnackBar" class="pa-5 w-100 h-100">
             <v-row>
                 <v-col v-for="n in products" :key="n.id" cols="3">
                     <product-item :product="n" />
                 </v-col>
             </v-row>
         </v-list>
-        <error-message v-else>{{ error.message }}</error-message>
+        <error-message v-else>{{ snackBar.errorMsg }}</error-message>
     </div>
 </template>
