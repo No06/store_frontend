@@ -16,6 +16,7 @@ const count = ref(0)
 const snackBarStore = useSnackBarStore()
 const showWarningDialog = ref(false)
 
+//初始化
 async function init() {
     isLoading.value = true
     await getCartByUserId(tokenStore.token)
@@ -27,16 +28,29 @@ async function init() {
         .catch(e => snackBarStore.errorMsg = e.message)
         .finally(() => isLoading.value = false)
 }
+// 总价
 const sum = computed({
     get: () => {
         let sum = 0;
         for (let i = 0; i < cartItems.value.length; i++) {
             sum += cartItems.value[i].subtotal;
         }
-        return sum
+        return new Decimal(sum)
     },
     set: () => {}
 })
+// 总价小数部分
+const sumDecimal = computed({
+    // 自身减去整数部分长度和小数点长度
+    get: () => {
+        const sumStr = sum.value.toString();
+        const sumInt = sum.value.trunc().toString();
+        const decimal = sumStr.toString().substring(sumInt.length + ".".length, sumStr.length);
+        return decimal == "" ? 0 : decimal;
+    },
+    set: () => {}
+})
+// 清空购物车
 async function clear() {
     isLoading.value = true
     await clearCart(tokenStore.token)
@@ -78,8 +92,10 @@ init()
                 <div class="d-flex align-end">
                     <h3>合计: </h3>
                     <h3 style="color:crimson;">￥</h3>
-                    <h1 style="color:crimson;">{{ Decimal.trunc(sum) }}</h1>
-                    <h3 style="color:crimson;">.{{ sum.toString().slice(sum.toString().indexOf('.') + 1, sum.toString().indexOf('.') + 3) }}</h3>
+                    <!-- 整数 -->
+                    <h1 style="color:crimson;">{{ sum.trunc() }}</h1>
+                    <!-- 小数部分 -->
+                    <h3 style="color:crimson;">.{{ sumDecimal }}</h3>
                 </div>
                 <v-row class="pt-6">
                     <v-btn size="large" color="primary" variant="text" rounded>

@@ -43,7 +43,7 @@ function emitSearch() {
 			<v-btn icon="mdi-magnify" variant="text" class="mr-2" type="submit" />
 
 			<v-combobox class="mr-5" hide-details label="类别" v-model="searchCategory"
-				:items="['全部'].concat(categorys.map(category => category.name))" variant="solo-filled"
+				:items="['全部'].concat(categorys.map(category => category.name!))" variant="solo-filled"
 				style="min-width: 150px" @update:model-value="emitSearch" />
 			<v-text-field v-model="searchName" class="flex-1-1-100" clearable hide-details="auto" label="商品名称关键词查找" />
 		</v-form>

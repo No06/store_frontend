@@ -45,7 +45,7 @@ async function init() {
         .finally(() => {
             categoryMap.clear()
             categoryMap.set("全部", null)
-            categorys.value.forEach(item => categoryMap.set(item.name, item.id))
+            categorys.value.forEach(item => categoryMap.set(item.name!, item.id))
         })
     
     await search()
@@ -71,6 +71,11 @@ function searchOnly() {
 }
 async function save(product: Product) {
     isSubmitted.value = true
+    if (typeof product.category == "string") {
+        const category = new ProductCategoryVO()
+        category.name = product.category
+        product.category = category;
+    }
     await saveProduct(product, tokenStore.token ?? undefined)
         .then(() => showSnackBar('添加成功'))
         .catch(e => {
@@ -160,7 +165,7 @@ init()
 
     <loading-dialog v-model="isSubmitted" title="提交中"/>
 	<error-dialog v-model="showErrorDialog" :title="errorDialogMsg"/>
-    <v-snackbar v-model="snackBar" color="success">
+    <v-snackbar v-model="snackBar" color="success" timeout="1500">
         <v-icon icon="mdi-check" class="mr-2" />
         {{ snackBarMsg }}
     </v-snackbar>

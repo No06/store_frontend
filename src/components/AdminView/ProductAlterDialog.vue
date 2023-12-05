@@ -5,11 +5,12 @@ import DialogAction from '../Dialog/DialogAction.vue';
 import ProductAlterForm from './ProductAlterForm.vue';
 import { ProductImage } from '@/entities/ProductImage';
 import { Product } from '@/entities/Product';
+import type { PropType } from 'vue';
 
 const props = defineProps({
 	lable: String,
 	product: {
-		type: Object,
+		type: Object as PropType<Product>,
 	},
 	categorys: {
 		type: Array,

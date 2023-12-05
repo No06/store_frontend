@@ -8,11 +8,12 @@ import ImageAddDialog from './ImageAddDialog.vue';
 import { ProductImage } from '@/entities/ProductImage';
 import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
 import { Product } from '../../entities/Product';
+import type { PropType } from 'vue';
 
 // 参数
 const props = defineProps({
     product: {
-        type: Object,
+        type: Object as PropType<Product>,
         default: Product
     },
     categorys: Array
@@ -41,7 +42,11 @@ function imageAdd(url: string) {
     product.value.images.push(product_image)
 }
 const mustSelectedRule = (value: ProductCategoryVO) => {
-    if (value.id == undefined) return "不能为空"
+    if (typeof value == "string") {
+        if (value == "") return "不能为空"
+        else return true;
+    } 
+    if (value.name == undefined || value.name == "") return "不能为空"
     return true
 }
 </script>
@@ -52,8 +57,8 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
-                <v-select label="类别" v-model="product.category" :items="categorys" item-title="name" item-value="id"
-                    :rules="[mustSelectedRule]" return-object />
+                <v-combobox label="类别" v-model="product.category" :items="categorys" item-title="name" item-value="id"
+                    :rules="[mustSelectedRule]" return-object @update:menu="console.log(product.category)"/>
             </v-col>
             <v-col cols="12" sm="6" md="6">
                 <v-text-field label="商品名" v-model="product.name" :rules="[nonull]" />

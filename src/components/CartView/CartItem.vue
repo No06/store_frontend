@@ -55,32 +55,36 @@ function remove() {
 <template>
     <v-sheet class="cart-item mb-4" elevation="3" rounded>
         <v-container class="d-flex align-center h-100">
-            <div class="pr-8" style="width: 100px;">
-                <v-img aspect-ratio="1" cover :src="cart.product.images[0].image_url" />
+
+            <div class="d-flex w-100">
+                <div class="pr-8" style="width: 100px;">
+                    <v-img aspect-ratio="1" cover :src="cart.product.images[0].image_url" />
+                </div>
+                <div class="d-flex flex-column">
+                    <h2 class="text-nowrap">{{ cart.product.name }}</h2>
+                    <h3 class="text-nowrap" style="color: grey;">
+                        {{ cart.product.description == "" ? "（无描述）" : cart.product.description }}
+                    </h3>
+                </div>
             </div>
 
-            <div class="d-flex flex-column">
-                <h2 class="text-nowrap">{{ cart.product.name }}</h2>
-                <h3 class="text-nowrap">{{ cart.product.description == "" ? "（无描述）" : cart.product.description }}</h3>
-            </div>
+            <div class="d-flex" style="width: 400px;">
+                <div class="d-flex flex-column pr-6">
+                    <v-text-field v-model="quantity" class="centered-input" type="number" density="comfortable"
+                        variant="outlined" single-line aria-hidden style="min-width: 120px; max-width: 150px;" hide-details @update:model-value="debounceSave">
+                        <template v-slot:prepend-inner>
+                            <v-btn icon="mdi-minus" density="comfortable" variant="text" @click="min" />
+                        </template>
+                        <template v-slot:append-inner>
+                            <v-btn icon="mdi-plus" density="comfortable" variant="text" @click="plus" />
+                        </template>
+                    </v-text-field>
+                </div>
 
-            <v-spacer />
-
-            <div class="d-flex flex-column pr-6">
-                <v-text-field v-model="quantity" class="centered-input" type="number" density="comfortable"
-                    variant="outlined" single-line aria-hidden style="max-width: 150px;" hide-details @update:model-value="debounceSave">
-                    <template v-slot:prepend-inner>
-                        <v-btn icon="mdi-minus" density="comfortable" variant="text" @click="min" />
-                    </template>
-                    <template v-slot:append-inner>
-                        <v-btn icon="mdi-plus" density="comfortable" variant="text" @click="plus" />
-                    </template>
-                </v-text-field>
-            </div>
-
-            <div class="d-flex flex-column pr-4">
-                <h3>总计</h3>
-                <h3>￥{{ cart.subtotal }}</h3>
+                <div class="d-flex flex-column pr-4" style="width: 100px;" >
+                    <h3>总计</h3>
+                    <h3 class="subtotal">￥{{ cart.subtotal }}</h3>
+                </div>
             </div>
 
             <v-btn icon="mdi-trash-can-outline" variant="text" @click="showWarningDialog = true"/>
@@ -96,5 +100,14 @@ function remove() {
 .text-nowrap {
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.centered-input :deep(input) {
+    text-align: center;
+}
+.subtotal {
+    overflow: auto;
+}
+.subtotal::-webkit-scrollbar {
+    display: none;
 }
 </style>
