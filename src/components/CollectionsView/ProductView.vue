@@ -6,7 +6,6 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ProductImage } from '@/entities/ProductImage';
 import { preview, vPreview } from 'vue3-image-preview';
-import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import { useTokenStore } from '../../stores/token_store';
 import router from '../../router/index';
 import { useSnackBarStore } from '../../stores/snack_bar_store';

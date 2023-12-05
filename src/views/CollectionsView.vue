@@ -3,7 +3,6 @@ import { ref } from 'vue';
 
 import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
-import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 import { getAllProdItemsBySpec } from '@/utils/axios';
 import type { ProductItemVO } from '@/entities/ProductItemVO';

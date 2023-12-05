@@ -8,7 +8,6 @@ import TrItem from '@/components/AdminView/TrItem.vue';
 import ToolBar from '@/components/AdminView/ToolBar.vue';
 import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 
-import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
 import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
