@@ -2,7 +2,7 @@
 import { ref, toRef } from 'vue';
 import draggable from 'vuedraggable';
 
-import { nonull, integer, postive, price } from '@/utils/formRules'
+import { nonull, integer, natural, price } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
 import { ProductImage } from '@/entities/ProductImage';
@@ -64,7 +64,7 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
                 <v-text-field label="商品名" v-model="product.name" :rules="[nonull]" />
             </v-col>
             <v-col cols="12" sm="6" md="3">
-                <v-text-field label="库存" v-model="product.stock" type="number" :rules="[nonull, postive, integer]" />
+                <v-text-field label="库存" v-model="product.stock" type="number" :rules="[nonull, natural, integer]" />
             </v-col>
 
             <!-- 价格 -->
@@ -73,11 +73,11 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
                     ' = ' + Math.floor(product.price * product.discount * 100) / 100" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格" v-model="product.price" type="number" required :rules="[nonull, postive, price]" />
+                <v-text-field label="价格" v-model="product.price" type="number" required :rules="[nonull, natural, price]" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
                 <v-text-field label="折扣（%）" v-model="_discount" :counter="3" type="number"
-                    @update:model-value="discountUpdate" required :rules="[nonull, postive, integer, discount]" />
+                    @update:model-value="discountUpdate" required :rules="[nonull, natural, integer, discount]" />
             </v-col>
 
             <!-- 描述 -->

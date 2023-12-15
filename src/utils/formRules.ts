@@ -7,9 +7,15 @@ export const integer = (value: any) => {
 	if (!rep.test(value)) return true
 	return '必须为整数'
 }
+// 正数
 export const postive = (value: any) => {
-	if (value >= 0) return true
+	if (value > 0) return true
 	return '必须为正数'
+}
+// 自然数
+export const natural = (value: number) => {
+	if (value >= 0) return true
+	return '必须为自然数'
 }
 export const length = (value: string | Array<any>, length: number) => {
     if (value.length > length) return '超出设定长度'+length

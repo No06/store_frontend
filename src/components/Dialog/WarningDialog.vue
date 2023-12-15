@@ -18,9 +18,9 @@ const modelValue = computed({
     }
 })
 
-function submit() {
+function submit(event: Event) {
     modelValue.value = false
-    emit('submit')
+    emit('submit', event)
 }
 </script>
 

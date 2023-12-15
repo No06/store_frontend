@@ -11,7 +11,6 @@ import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
 import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
-import { useTokenStore } from '../../stores/token_store';
 
 // 状态
 const count = ref(0)
@@ -24,7 +23,6 @@ const snackBarMsg = ref('')
 const showPrds = ref(new Array<Product>)
 const categorys = ref(new Array<ProductCategoryVO>)
 const categoryMap = new Map<string, any>()
-const tokenStore = useTokenStore()
 const errorDialogMsg = ref('')
 const showErrorDialog = computed({
     get: () => errorDialogMsg.value != null && errorDialogMsg.value != "",
@@ -75,7 +73,7 @@ async function save(product: Product) {
         category.name = product.category
         product.category = category;
     }
-    await saveProduct(product, tokenStore.token ?? undefined)
+    await saveProduct(product)
         .then(() => showSnackBar('添加成功'))
         .catch(e => {
             errorDialogMsg.value = e.message
@@ -88,7 +86,7 @@ async function delProduct(product: Product) {
     count.value -= 1
     isSubmitted.value = true
 
-    await delProductById(product.id, tokenStore.token ?? undefined)
+    await delProductById(product.id)
         .then(() => showSnackBar('删除成功'))
         .catch(e => errorDialogMsg.value = e.message)
         .finally(() => isSubmitted.value = false)

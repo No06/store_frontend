@@ -77,4 +77,4 @@ $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
     font-family: "jf-openhuninn";
     color: #7F7E7D;
 }
-</style>@/entities/ProductVO@/entities/CarouselVO
+</style>

@@ -53,7 +53,8 @@ function login() {
         .then(resp => {
             if (resp.status == 200) {
                 tokenStore.update(resp.data);
-                router.back()
+                router.back();
+                snackBar.successMsg = "登录成功"
             } else {
                 alertMsg.value = resp.data
             }

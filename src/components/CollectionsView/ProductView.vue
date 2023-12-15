@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Product } from '@/entities/Product';
-import ErrorMessage from '@/components/ErrorMessage.vue';
 import { addCart, getProductById } from '@/utils/axios';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -20,6 +19,7 @@ const imageIndex = ref(0)
 const isHover = ref(false)
 const description = ref([0])
 const tokenStore = useTokenStore();
+const token = tokenStore.token;
 const snackBarStore = useSnackBarStore();
 
 function init() {
@@ -57,12 +57,11 @@ function nextImg() {
 }
 function addToCart() {
     const product_id = product.value.id
-    const token = tokenStore.token;
     if (token == null || token == undefined) {
         router.push("/login")
         return
     }
-    addCart(product_id, count.value, token)
+    addCart(product_id, count.value)
         .then(() => snackBarStore.successMsg = "添加成功")
         .catch(e => snackBarStore.errorMsg = "发生错误：" + e.message)
 }
@@ -70,7 +69,7 @@ init()
 </script>
 
 <template>
-    <v-list v-if="!snackBarStore.showErrorSnackBar" class="h-100">
+    <v-list class="h-100">
         <div class="d-flex flex-column h-100 px-16 py-8" style="min-height: 600px;">
             <div class="d-flex mx-16 mb-8" style="font-size: 24px;">
                 <div class="d-flex align-center" style="cursor: pointer;" @mouseover="isHover = true"
@@ -84,7 +83,7 @@ init()
             <div class="d-flex align-center w-100 h-100">
                 <!-- 图片 -->
                 <div class="d-flex align-center h-100 w-100 mx-8">
-                    <!-- 预览条 -->
+                    <!-- 图片预览列表 -->
                     <div class="d-flex flex-column align-center mr-8 my-16">
                         <v-btn icon="mdi-menu-up" variant="text" style="font-size: 1.5rem; color: #424242;"
                             @click="preImg" />
@@ -158,10 +157,6 @@ init()
             </div>
         </div>
     </v-list>
-    
-    <error-message v-else class="h-100">
-        {{ snackBarStore.errorMsg }}
-    </error-message>
 </template>
 
 <style lang="scss" scoped>
@@ -202,4 +197,4 @@ init()
 .backup-hover {
     padding-right: 1rem;
 }
-</style>@/entities/ProductVO@/entities/Product../../stores/token_store
+</style>
