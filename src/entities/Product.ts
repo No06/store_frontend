@@ -1,5 +1,7 @@
+import Decimal from "decimal.js";
 import { ProductCategoryVO } from "./ProductCategoryVO";
 import type { ProductImage } from "./ProductImage";
+import type { ProductItemVO } from "./ProductItemVO";
 
 export class Product {
     id!: number;
@@ -10,4 +12,8 @@ export class Product {
     description: string = ""
     category: ProductCategoryVO = new ProductCategoryVO
     images: Array<ProductImage> = new Array<ProductImage>
+}
+
+export function getFinalPrice(product: Product | ProductItemVO) {
+    return new Decimal(product.price).times(product.discount).toFixed(2, Decimal.ROUND_HALF_EVEN);
 }

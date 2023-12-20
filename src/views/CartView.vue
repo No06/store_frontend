@@ -17,6 +17,7 @@ const count = ref(0)
 const snackBarStore = useSnackBarStore()
 const showWarningDialog = ref(false)
 const selectedItems = reactive(new Set<number>) // 清单展示物品列表
+let totalDiscountSum: Decimal // 总优惠金额
 
 //初始化
 async function init() {
@@ -24,10 +25,7 @@ async function init() {
     await getCartByUserId()
         .then(resp => {
             cartItems.value = resp.data
-            cartItems.value.forEach((cart, i) => {
-                cart.subtotal = getProductTotalPrice(cart)
-                if (cart.isSelected) selectedItems.add(i)
-            })
+            cartItems.value.forEach(updateCart)
             count.value = cartItems.value.length
         })
         .catch(e => snackBarStore.errorMsg = e.message)
@@ -37,10 +35,13 @@ async function init() {
 const sum = computed({
     get: () => {
         let sum = new Decimal(0);
+        totalDiscountSum = new Decimal(0);
         for (let i = 0; i < cartItems.value.length; i++) {
             // 如果是被选中的才被计算到总计
             if (selectedItems.has(i)) {
-                sum = sum.plus(cartItems.value[i].subtotal)
+                const cart = cartItems.value[i];
+                sum = sum.plus(cart.subtotal)
+                totalDiscountSum = totalDiscountSum.plus(cart.totalDiscount)
             }
         }
         // 四舍六入五成双
@@ -85,7 +86,9 @@ function submit() {
 }
 // 当购物车发生变化时
 function updateCart(cart: CartVO, index: number) {
-    cart.subtotal = getProductTotalPrice(cart)
+    const price = getProductTotalPrice(cart)
+    cart.subtotal = price.totalPrice
+    cart.totalDiscount = price.totalDiscount
     if (cart.isSelected) {
         selectedItems.add(index);
     } else {
@@ -128,13 +131,17 @@ init()
 
             <v-divider class="py-2" />
             <div>
-                <div class="d-flex align-end">
+                <div class="d-flex align-end text-no-wrap">
                     <h3>合计: </h3>
                     <h3 style="color:crimson;">￥</h3>
                     <!-- 整数 -->
                     <h1 style="color:crimson;">{{ sumInteger }}</h1>
                     <!-- 小数部分 -->
                     <h3 style="color:crimson;">.{{ sumDecimal }}</h3>
+                </div>
+                <div class="d-flex text-no-wrap">
+                    <h3>总优惠金额: </h3>
+                    <h3 style="color: green;">￥{{ totalDiscountSum }}</h3>
                 </div>
                 <v-row class="pt-6">
                     <!-- 清空 -->

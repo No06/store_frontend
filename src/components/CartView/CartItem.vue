@@ -42,7 +42,7 @@ const isSubmited = ref(false) // 执行状态
 const showWarningDialog = ref(false) // 是否展示警告窗
 // 更新购物车商品数量
 function update() {
-    if (quantity.value.toString().length == 0 || quantity.value == 0) {
+    if (nonull(quantity.value.toString()) != true || postive(quantity.value) != true) {
         return
     }
     emit('modelValue', cart);
@@ -85,45 +85,56 @@ function remove() {
     <v-card class="cart-item mb-4" elevation="3" rounded @click="() => { if (!isOutOfStock) isSelected = !isSelected }"
         :disabled="isOutOfStock">
         <v-container class="d-flex align-center h-100">
-            <v-checkbox class="pr-2" v-model="isSelected" direction="vertical" hide-details hide-spin-buttons
-                color="primary" />
-
-            <div class="d-flex w-100">
-                <div class="pr-8" style="width: 100px;">
-                    <v-img aspect-ratio="1" cover :src="cart.product.images[0].image_url" />
+            <v-row class="align-center" style="flex-wrap: nowrap;">
+                <!-- 选择框 -->
+                <div class="d-flex flex-0-0">
+                    <v-checkbox class="pl-4 pr-2 align-self-center" v-model="isSelected" hide-details hide-spin-buttons
+                        color="primary" />
                 </div>
-                <div class="d-flex flex-column justify-center">
-                    <h2 class="text-nowrap">{{ cart.product.name }}</h2>
-                    <h3 class="text-nowrap" style="color: grey;">
+                <!-- 图片 -->
+                <div class="flex-0-0" style="width: 80px;">
+                    <v-img class="ma-2" aspect-ratio="1" cover :src="cart.product.images[0].image_url" />
+                </div>
+                <!-- 商品名与描述 -->
+                <div class="text-nowrap mx-4" style="display: grid;">
+                    <h2 class="text-nowrap overflow-ellipsis">{{ cart.product.name }}</h2>
+                    <h3 class="text-nowrap overflow-ellipsis" style="color: grey;">
                         {{ cart.product.description == "" ? "（无描述）" : cart.product.description }}
                     </h3>
+                    <!-- {{ cart.product.name }} -->
                 </div>
-            </div>
-            <!-- 反Row -->
-            <div v-if="!isOutOfStock" class="d-flex flex-row-reverse" style="min-width: 400px; max-width: 500px;">
-                <!-- 总计 -->
-                <div class="d-flex flex-column pr-4 text-nowrap" style="min-width: 100px;">
-                    <h3>总计</h3>
-                    <h3 class="subtotal">￥{{ cart.subtotal }}</h3>
+                <v-spacer></v-spacer>
+                <!-- 反Row -->
+                <div class="d-flex align-center px-4" style="max-width: 500px;">
+                    <div v-if="!isOutOfStock" class="d-flex flex-row-reverse align-center">
+                        <!-- 总计 -->
+                        <div class="d-flex flex-column pr-4 text-nowrap" style="min-width: 100px;">
+                            <h3>总计</h3>
+                            <h3 class="subtotal">￥{{ cart.subtotal }}</h3>
+                        </div>
+                        <!-- 加减 -->
+                        <div class="d-flex flex-column justify-center pr-6" style="width: 160px;">
+                            <v-text-field v-model="quantity" class="centered-input" type="number" density="comfortable"
+                                variant="outlined" single-line aria-hidden hide-details hide-spin-buttons
+                                style="min-width: 100px; max-width: 150px;" @update:model-value="update" @click.stop
+                                :rules="[nonull, postive]">
+                                <template v-slot:prepend-inner>
+                                    <v-btn icon="mdi-minus" density="comfortable" variant="text" @click.stop="minus" />
+                                </template>
+                                <template v-slot:append-inner>
+                                    <v-btn icon="mdi-plus" density="comfortable" variant="text" @click.stop="plus" />
+                                </template>
+                            </v-text-field>
+                        </div>
+                    </div>
+                    <!-- 如果没货 -->
+                    <h2 v-else>无货</h2>
+                    <!-- 删除按钮 -->
+                    <v-btn icon="mdi-trash-can-outline" variant="text" @click.stop="showWarningDialog = true"
+                            style="pointer-events: all;" />
                 </div>
-                <!-- 加减 -->
-                <div class="d-flex flex-column justify-center pr-6">
-                    <v-text-field v-model="quantity" class="centered-input" type="number" density="comfortable"
-                        variant="outlined" single-line aria-hidden style="min-width: 100px; max-width: 150px;" hide-details
-                        @update:model-value="update" @click.stop :rules="[nonull, postive]">
-                        <template v-slot:prepend-inner>
-                            <v-btn icon="mdi-minus" density="comfortable" variant="text" @click.stop="minus" />
-                        </template>
-                        <template v-slot:append-inner>
-                            <v-btn icon="mdi-plus" density="comfortable" variant="text" @click.stop="plus" />
-                        </template>
-                    </v-text-field>
-                </div>
-            </div>
-            <h2 v-else>无货</h2>
+            </v-row>
 
-            <v-btn icon="mdi-trash-can-outline" variant="text" @click.stop="showWarningDialog = true"
-                style="pointer-events: all;" />
             <warning-dialog v-model="showWarningDialog" title="确定删除吗？" activator="none" @submit="remove" />
         </v-container>
     </v-card>
@@ -134,8 +145,12 @@ function remove() {
 
 <style scoped>
 .text-nowrap {
+    overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
+}
+
+.overflow-ellipsis {
+  text-overflow: ellipsis;
 }
 
 .centered-input :deep(input) {
@@ -149,4 +164,5 @@ function remove() {
 .subtotal::-webkit-scrollbar {
     display: none;
 }
+
 </style>

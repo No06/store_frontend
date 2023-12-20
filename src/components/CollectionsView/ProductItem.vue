@@ -2,6 +2,7 @@
 import { ref, toRefs, watch } from 'vue';
 import type { ProductItemVO } from '../../entities/ProductItemVO';
 import type { PropType } from 'vue';
+import { getFinalPrice } from '../../entities/Product';
 
 const props = defineProps({
     product: {
@@ -16,6 +17,7 @@ const imgScale = ref(1)
 const isError = ref(false)
 const isHover = ref(false)
 const isSale = product.value.discount != 1;
+const finalPrice = getFinalPrice(props.product)
 
 try {
     imageSrc.value = product.value.image.image_url
@@ -48,7 +50,7 @@ watch(
             <p class="product_name" :class="{ underline: isHover }">{{ product.name }}</p>
             <div class="product_price">
                 <p :class="{ original_price: isSale }">￥{{ product.price }}</p>
-                <p v-if="isSale" class="current_price">￥{{ Math.floor(product.price * product.discount * 100) / 100 }}</p>
+                <p v-if="isSale" class="current_price">￥{{ finalPrice }}</p>
             </div>
         </div>
     </v-sheet>
