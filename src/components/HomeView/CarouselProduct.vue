@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { CarouselVO } from '@/entities/CarouselVO';
+import type { CarouselVO } from '@/entities/Carousel';
 import { type PropType } from 'vue';
 
 defineProps({
@@ -77,4 +77,4 @@ $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
     font-family: "jf-openhuninn";
     color: #7F7E7D;
 }
-</style>
+</style>@/entities/Carousel

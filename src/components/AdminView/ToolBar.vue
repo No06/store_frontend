@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import { Product } from '@/entities/Product';
-import type { ProductCategoryVO } from '@/entities/ProductCategoryVO';
+import type { ProductCategoryVO } from '@/entities/ProductCategory';
 
 defineProps({
 	categorys: {
@@ -48,4 +48,4 @@ function emitSearch() {
 			<v-text-field v-model="searchName" class="flex-1-1-100" clearable hide-details="auto" label="商品名称关键词查找" />
 		</v-form>
 	</div>
-</template>@/entities/Product
+</template>

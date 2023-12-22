@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios";
 import { defineStore } from "pinia";
 import { ref, computed } from 'vue';
 
@@ -16,5 +17,13 @@ export const useSnackBarStore = defineStore('snackBarStore', () => {
             if (!newVal) successMsg.value = ""
         }
     })
-    return { errorMsg, showErrorSnackBar, successMsg, showSuccessSnackBar }
+    const showAxiosError = (e: AxiosError) => {
+        const data = e.response?.data as any
+        if (data.message) {
+            errorMsg.value = e.code + ": " + data.message;
+        } else {
+            errorMsg.value = e.message
+        }
+    }
+    return { errorMsg, showErrorSnackBar, successMsg, showSuccessSnackBar, showAxiosError }
 })

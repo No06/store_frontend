@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import CarouselProduct from '@/components/HomeView/CarouselProduct.vue';
-import type { CarouselVO } from '@/entities/CarouselVO';
+import type { CarouselVO } from '@/entities/Carousel';
 import { getAllCarousel } from '@/utils/axios';
 import { ref } from 'vue';
 import { useSnackBarStore } from '../stores/snack_bar_store';
@@ -15,7 +15,7 @@ function init() {
 
     getAllCarousel()
         .then(resp => carousels.value = resp.data)
-        .catch(e => snackBar.errorMsg = e.message)
+        .catch(snackBar.showAxiosError)
         .finally(() => isLoadding.value = false)
 }
 init()
@@ -35,4 +35,4 @@ init()
             <error-message v-else class="h-100">{{ snackBar.errorMsg }}</error-message>
         </div>
     </v-list>
-</template>
+</template>@/entities/Carousel

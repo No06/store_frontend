@@ -10,7 +10,7 @@ import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
-import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
+import { ProductCategoryVO } from '../../entities/ProductCategory';
 
 // 状态
 const count = ref(0)
@@ -28,7 +28,7 @@ const showErrorDialog = computed({
     get: () => errorDialogMsg.value != null && errorDialogMsg.value != "",
     set: (newVal) => newVal ? errorDialogMsg.value = "" : {},
 })
-const isSubmitted = ref(false)
+const committing = ref(false)
 let searchCategoryName = ''
 let searchName = ''
 
@@ -67,7 +67,7 @@ function searchOnly() {
     search().finally(() => isLoading.value = false)
 }
 async function save(product: Product) {
-    isSubmitted.value = true
+    committing.value = true
     if (typeof product.category == "string") {
         const category = new ProductCategoryVO()
         category.name = product.category
@@ -79,17 +79,17 @@ async function save(product: Product) {
             errorDialogMsg.value = e.message
             return
         })
-        .finally(() => isSubmitted.value = false)
+        .finally(() => committing.value = false)
     init()
 }
 async function delProduct(product: Product) {
     count.value -= 1
-    isSubmitted.value = true
+    committing.value = true
 
     await delProductById(product.id)
         .then(() => showSnackBar('删除成功'))
         .catch(e => errorDialogMsg.value = e.message)
-        .finally(() => isSubmitted.value = false)
+        .finally(() => committing.value = false)
     init()
 }
 function showSnackBar(msg: string) {
@@ -160,7 +160,7 @@ init()
     </div>
     <error-message v-else>{{ error }}</error-message>
 
-    <loading-dialog v-model="isSubmitted" title="提交中"/>
+    <loading-dialog v-model="committing" title="提交中"/>
 	<error-dialog v-model="showErrorDialog" :title="errorDialogMsg"/>
     <v-snackbar v-model="snackBar" color="success" timeout="1500">
         <v-icon icon="mdi-check" class="mr-2" />

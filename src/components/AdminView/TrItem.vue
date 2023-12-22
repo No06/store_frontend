@@ -6,7 +6,7 @@ import WarningDialog from '../Dialog/WarningDialog.vue';
 import LoadingDialog from '../Dialog/LoadingDialog.vue';
 import { Product } from '../../entities/Product';
 import { getProductById } from '../../utils/axios';
-import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
+import { ProductCategoryVO } from '../../entities/ProductCategory';
 
 const props = defineProps({
     product: {

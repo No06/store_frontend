@@ -5,7 +5,7 @@ import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 import { getAllProdItemsBySpec } from '@/utils/axios';
-import type { ProductItemVO } from '@/entities/ProductItemVO';
+import type { ProductItemVO } from '@/entities/ProductItem';
 import { useSnackBarStore } from '../stores/snack_bar_store';
 
 class searchParams {
@@ -32,7 +32,7 @@ function init() {
     isLoading.value = true
     getAllProdItemsBySpec(_searchParams.value)
         .then(resp => products.value = resp.data)
-        .catch(e => snackBar.errorMsg = e.message)
+        .catch(snackBar.showAxiosError)
         .finally(() => isLoading.value = false)
 }
 init()
@@ -60,4 +60,4 @@ init()
         </v-list>
         <error-message v-else>{{ snackBar.errorMsg }}</error-message>
     </div>
-</template>
+</template>@/entities/ProductItem

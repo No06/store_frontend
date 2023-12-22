@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ProductCategoryVO } from '@/entities/ProductCategoryVO';
+import type { ProductCategoryVO } from '@/entities/ProductCategory';
 
 export const useCategoryStore = defineStore('categoryStore', () => {
     const categorys = ref(new Array<ProductCategoryVO>)

@@ -1,4 +1,4 @@
-import type { ProductCategoryVO } from "./ProductCategoryVO";
+import type { ProductCategoryVO } from "./ProductCategory";
 import type { ProductImage } from "./ProductImage";
 
 export interface ProductItemVO {

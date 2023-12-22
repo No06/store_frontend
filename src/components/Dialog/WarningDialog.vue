@@ -13,9 +13,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'submit'])
 const modelValue = computed({
     get: () => props.modelValue,
-    set(newVal) {
-        emit('update:modelValue', newVal)
-    }
+    set: (newVal) => emit('update:modelValue', newVal)
 })
 
 function submit(event: Event) {

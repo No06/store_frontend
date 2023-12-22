@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { clearCart, getCartByUserId } from '@/utils/axios';
 import { ref, computed } from 'vue';
-import { getProductTotalPrice, type CartVO } from '@/entities/CartVO';
+import { getProductTotalPrice, type CartVO } from '@/entities/Cart';
 import CartItem from '@/components/CartView/CartItem.vue';
 import SettleItem from '@/components/CartView/SettleItem.vue';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
@@ -173,4 +173,4 @@ init()
     display: flex;
     flex-direction: column;
 }
-</style>
+</style>@/entities/Cart

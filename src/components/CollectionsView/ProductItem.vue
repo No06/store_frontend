@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, toRefs, watch } from 'vue';
-import type { ProductItemVO } from '../../entities/ProductItemVO';
+import type { ProductItemVO } from '../../entities/ProductItem';
 import type { PropType } from 'vue';
 import { getFinalPrice } from '../../entities/Product';
 
@@ -106,4 +106,4 @@ watch(
     backdrop-filter: blur(2px);
     font-size: x-large;
 }
-</style>../../entities/ProductItemVO
+</style>../../entities/ProductItemVO../../entities/ProductItem

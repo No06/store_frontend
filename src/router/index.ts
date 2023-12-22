@@ -53,6 +53,10 @@ const router = createRouter({
 				{
 					path: "/order",
 					component: () => import("@/views/OrderView.vue"),
+				},
+				{
+					path: "/user-address",
+					component: () => import("@/views/UserAddressView.vue")
 				}
 			]
 		},
@@ -68,7 +72,8 @@ const router = createRouter({
 const needTokenPaths = new Set([
 	"/profile",
 	"/admin",
-	"/cart"
+	"/cart",
+	"/user-address"
 ])
 // 不进行token校验的路由
 const tokenCheckExcludePaths = new Set([
@@ -82,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
 	const token = tokenStore.token
 	// 如果不是/login页面并且存有token，则验证token有效性
 	if (!tokenCheckExcludePaths.has(getParentPath(to.path)) && token != null) {
-		await checkToken(token).catch(tokenStore.remove)
+		await checkToken().catch(tokenStore.remove)
 		next()
 		return
 	}

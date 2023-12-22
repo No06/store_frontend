@@ -18,7 +18,7 @@ const decodeToken = tokenStore.decodeToken()
             </div>
         </v-sheet>
 
-        <v-expansion-panels>
+        <!-- <v-expansion-panels>
             <v-expansion-panel
                 title="信息"
                 text="信息......"
@@ -31,6 +31,6 @@ const decodeToken = tokenStore.decodeToken()
                 title="信息"
                 text="信息......"
             />
-        </v-expansion-panels>
+        </v-expansion-panels> -->
     </div>
 </template>@/stores/token_store

@@ -1,4 +1,4 @@
-import type { CartVO } from "@/entities/CartVO";
+import type { CartVO } from "@/entities/Cart";
 import type { ProductOrder } from "@/entities/util/ProductOrder";
 import { defineStore } from "pinia";
 import { ref } from "vue";

@@ -3,11 +3,12 @@ import { useSnackBarStore } from './stores/snack_bar_store';
 
 const snackBarStore = useSnackBarStore()
 const snackBarTimeout = 3000;
+const snackBarErrorTime = 5000;
 </script>
 
 <template>
   <router-view/>
-  <v-snackbar v-model="snackBarStore.showErrorSnackBar" color="error" :timeout="snackBarTimeout">
+  <v-snackbar v-model="snackBarStore.showErrorSnackBar" color="error" :timeout="snackBarErrorTime">
       <v-icon icon='mdi-close-circle-outline' class="mr-2" />
       {{ snackBarStore.errorMsg }}
   </v-snackbar>

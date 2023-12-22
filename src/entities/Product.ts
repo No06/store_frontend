@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
-import { ProductCategoryVO } from "./ProductCategoryVO";
+import { ProductCategoryVO } from "./ProductCategory";
 import type { ProductImage } from "./ProductImage";
-import type { ProductItemVO } from "./ProductItemVO";
+import type { ProductItemVO } from "./ProductItem";
 
 export class Product {
     id!: number;

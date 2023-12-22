@@ -6,7 +6,7 @@ import { nonull, integer, natural, price } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
 import { ProductImage } from '@/entities/ProductImage';
-import { ProductCategoryVO } from '../../entities/ProductCategoryVO';
+import { ProductCategoryVO } from '../../entities/ProductCategory';
 import { Product } from '../../entities/Product';
 import type { PropType } from 'vue';
 
@@ -51,7 +51,6 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
 }
 </script>
 
-// TODO:表单验证
 <template>
     <v-form @submit.prevent="() => { if (isValidated) emit('submit', product) }" v-model="isValidated" required>
         <v-row>

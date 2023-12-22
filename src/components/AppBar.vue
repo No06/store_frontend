@@ -13,6 +13,10 @@ const dropDownItems = [
         onClicked: () => router.push("/profile")
     },
     {
+        title: "收货地址管理",
+        onClicked: () => router.push("/user-address")
+    },
+    {
         title: "注销",
         onClicked: () => {
             tokenStore.remove();
