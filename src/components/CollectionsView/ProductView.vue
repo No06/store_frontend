@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Product } from '@/entities/Product';
+import { Product, getFinalPrice } from '@/entities/Product';
 import { addCart, getProductById } from '@/utils/axios';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -115,8 +115,7 @@ init()
                                 <!-- 价格 -->
                                 <div class="price">
                                     <span :class="{ original_price: product.discount != 1 }">￥{{ product.price }}</span>
-                                    <span v-if="product.discount != 1" class="current_price">￥{{ Math.floor(product.price *
-                                        product.discount * 100) / 100 }}</span>
+                                    <span v-if="product.discount != 1" class="current_price">￥{{ getFinalPrice(product) }}</span>
                                 </div>
                             </div>
                         </v-skeleton-loader>
