@@ -1,29 +1,30 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import DialogAction from './DialogAction.vue';
 
 const props = defineProps({
     modelValue: {
-        type: Boolean,
-        default: false
+        type: Boolean
     },
     title: String
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
+const open = ref(false)
 const modelValue = computed({
-    get: () => props.modelValue,
-    set: (newVal) => emit('update:modelValue', newVal)
+    get: () => props.modelValue || open.value,
+    set: (newVal) => {
+        open.value = newVal
+        emit('update:modelValue', newVal)
+    }
 })
-
 function submit(event: Event) {
-    modelValue.value = false
     emit('submit', event)
 }
 </script>
 
 <template>
-    <v-dialog v-model="modelValue" activator="parent" width="auto">
+    <v-dialog v-model="modelValue" activator="parent" width="auto" persistent>
         <v-card>
             <v-card-text>
                 <v-container class="d-flex align-center">

@@ -19,7 +19,7 @@ export const useSnackBarStore = defineStore('snackBarStore', () => {
     })
     const showAxiosError = (e: AxiosError) => {
         const data = e.response?.data as any
-        if (data.message) {
+        if (data) {
             errorMsg.value = e.code + ": " + data.message;
         } else {
             errorMsg.value = e.message

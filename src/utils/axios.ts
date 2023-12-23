@@ -18,7 +18,7 @@ const authHeader = () => {
     };
 }
 
-export const url = "http://localhost:8080"
+export const url = "http://192.168.1.117:8080"
 
 // User
 const userUrl = url + userPath;

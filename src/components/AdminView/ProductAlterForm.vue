@@ -21,7 +21,6 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const isValidated = ref(false)
-const imageDeleteDialog = ref(false)
 const product = toRef(props, 'product')
 const _discount = ref<Number>(product.value.discount * 100)
 
@@ -45,19 +44,24 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
     if (typeof value == "string") {
         if (value == "") return "不能为空"
         else return true;
-    } 
+    }
     if (value.name == undefined || value.name == "") return "不能为空"
     return true
+}
+// 提交更改
+function submit() {
+    // 表单验证成功才能提交
+    if (isValidated.value) emit('submit', product.value)
 }
 </script>
 
 <template>
-    <v-form @submit.prevent="() => { if (isValidated) emit('submit', product) }" v-model="isValidated" required>
+    <v-form @submit.prevent="submit" v-model="isValidated" required>
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
                 <v-combobox label="类别" v-model="product.category" :items="categorys" item-title="name" item-value="id"
-                    :rules="[mustSelectedRule]" return-object @update:menu="console.log(product.category)"/>
+                    :rules="[mustSelectedRule]" return-object @update:menu="console.log(product.category)" />
             </v-col>
             <v-col cols="12" sm="6" md="6">
                 <v-text-field label="商品名" v-model="product.name" :rules="[nonull]" />
@@ -94,27 +98,26 @@ const mustSelectedRule = (value: ProductCategoryVO) => {
                         <image-add-dialog @submit="imageAdd" />
                     </v-btn>
                 </div>
-                <v-list lines="one">
-                    <draggable :list="product.images" item-key="rank">
+                <v-col>
+                    <draggable v-model="product.images" item-key="rank">
                         <template #item="{ element, index }">
-                            <v-list-item :title="element.image_url" :key="index" variant="tonal" class="mb-2" rounded
+                            <v-list-item :title="element.image_url" variant="tonal" class="mb-2" rounded
                                 style="cursor: pointer">
-                                <template v-slot:prepend>
+                                <!-- 图片 -->
+                                <template #prepend>
                                     <v-img :width="50" aspect-ratio="1/1" cover :src="element.image_url" class="mr-3" />
                                 </template>
-
-                                <template v-slot:append>
+                                <!-- 删除按钮 -->
+                                <template #append>
                                     <v-btn icon="mdi-delete" variant="text">
-                                        <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
-                                            aria-hidden="true"></i>
-                                        <warning-dialog v-model="imageDeleteDialog" title="确定要删除吗"
-                                            @submit="product.images.splice(index, 1), imageDeleteDialog = false" />
+                                        <i class="mdi-delete mdi v-icon notranslate v-icon--size-default" />
+                                        <warning-dialog title="确定要删除吗" @submit="product.images.splice(index, 1)" />
                                     </v-btn>
                                 </template>
                             </v-list-item>
                         </template>
                     </draggable>
-                </v-list>
+                </v-col>
             </v-col>
         </v-row>
         <slot name="action"></slot>

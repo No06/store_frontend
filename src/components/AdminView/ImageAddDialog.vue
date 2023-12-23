@@ -15,15 +15,17 @@ function submit() {
 </script>
 
 <template>
-    <v-dialog v-model="open" activator="parent" persistent width="500" @update:model-value="url = ''">
+    <v-dialog v-model="open" activator="parent" persistent min-width="500" width="auto" @update:model-value="url = ''">
         <v-card>
-            <v-card-title>添加图片</v-card-title>
-            <v-card-text>
-                <v-text-field v-model="url" label="链接" clearable />
-                <span>预览</span>
-                <v-img height="auto" aspect-ratio="1/1" cover :src="url"/>
-            </v-card-text>
-            <dialog-action @cancel="open = false" @submit="submit"/>
+            <v-container>
+                <v-card-title>添加图片</v-card-title>
+                <v-card-text>
+                    <v-text-field v-model="url" label="链接" clearable />
+                    <span>预览</span>
+                    <v-img height="auto" aspect-ratio="1/1" cover :src="url" />
+                </v-card-text>
+                <dialog-action @cancel="open = false" @submit="submit" />
+            </v-container>
         </v-card>
     </v-dialog>
 </template>
