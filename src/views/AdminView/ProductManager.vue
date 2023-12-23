@@ -89,7 +89,13 @@ async function delProduct(product: Product) {
     await delProductById(product.id)
         .then(() => showSnackBar('删除成功'))
         .catch(e => errorDialogMsg.value = e.message)
-        .finally(() => committing.value = false)
+        .finally(() => {
+            // 非第一页并且剩余数能被10整除
+            if (page.value > 1 && count.value % 10 == 0) {
+                page.value -= 1
+            }
+            committing.value = false
+        })
     init()
 }
 function showSnackBar(msg: string) {

@@ -84,7 +84,7 @@ function remove() {
 <template>
     <v-card class="cart-item mb-4" elevation="3" rounded @click="() => { if (!isOutOfStock) isSelected = !isSelected }"
         :disabled="isOutOfStock">
-        <v-container class="d-flex align-center h-100">
+        <v-div class="d-flex align-center h-100 ma-4">
             <v-row class="align-center" style="flex-wrap: nowrap;">
                 <!-- 选择框 -->
                 <div class="d-flex flex-0-0">
@@ -136,7 +136,7 @@ function remove() {
             </v-row>
 
             <warning-dialog v-model="showWarningDialog" title="确定删除吗？" activator="none" @submit="remove" />
-        </v-container>
+        </v-div>
     </v-card>
 
     <loading-dialog v-model="isSubmited" title="提交中" />

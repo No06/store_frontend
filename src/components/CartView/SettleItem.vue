@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 import { type CartVO } from '../../entities/Cart';
+import { computed } from 'vue';
 
 const props = defineProps({
     cart: {
@@ -12,7 +13,7 @@ const props = defineProps({
         required: true,
     }
 })
-const isOnSale = props.cart.product.discount != 1
+const isOnSale = computed(() => props.cart.product.discount != 1)
 </script>
 
 <template>
