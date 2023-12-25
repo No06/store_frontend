@@ -9,8 +9,7 @@ const props = defineProps({
     address: {
         type: Object as PropType<UserAddress>,
         default: () => ({})
-    },
-    categorys: Array
+    }
 })
 const emit = defineEmits(['submit'])
 

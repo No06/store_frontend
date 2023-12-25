@@ -47,7 +47,7 @@ const sum = computed({
         // 四舍六入五成双
         return sum.toFixed(2, Decimal.ROUND_HALF_EVEN);
     },
-    set: () => {}
+    set: () => { }
 })
 // 总价整数部分
 const sumInteger = computed({
@@ -56,20 +56,20 @@ const sumInteger = computed({
         const integer = sum.value.substring(0, sum.value.length - 3);
         return integer == "" ? 0 : integer;
     },
-    set: () => {}
+    set: () => { }
 })
 // 总价小数部分
 const sumDecimal = computed({
     // 自身减去整数部分长度和小数点长度
     get: () => {
         const decimal = sum.value.substring(sum.value.lastIndexOf(".") + 1);
-        return decimal == "" 
+        return decimal == ""
             ? 0
             : decimal == "00"
                 ? "0"
                 : decimal;
     },
-    set: () => {}
+    set: () => { }
 })
 // 清空购物车
 async function clear() {
@@ -147,8 +147,7 @@ init()
                     <!-- 清空 -->
                     <v-btn size="large" color="primary" variant="text" rounded>
                         清空购物车
-                        <warning-dialog v-model="showWarningDialog" activator="parent" persistent title="确定要清空购物车吗？此操作不可逆！"
-                            @submit="clear" />
+                        <warning-dialog v-model="showWarningDialog" title="确定要清空购物车吗？此操作不可逆！" @submit="clear" autoclose/>
                     </v-btn>
                     <!-- 结算 -->
                     <div class="flex-1-0">

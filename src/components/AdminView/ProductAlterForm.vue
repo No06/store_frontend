@@ -9,6 +9,7 @@ import { ProductImage } from '@/entities/ProductImage';
 import { ProductCategoryVO } from '../../entities/ProductCategory';
 import { Product } from '../../entities/Product';
 import type { PropType } from 'vue';
+import { getFinalPrice } from '@/entities/Product';
 
 // 参数
 const props = defineProps({
@@ -73,7 +74,7 @@ function submit() {
             <!-- 价格 -->
             <v-col cols="12" sm="6" md="4">
                 <v-text-field label="价格预览" readonly :model-value="product.price + ' * ' + product.discount +
-                    ' = ' + Math.floor(product.price * product.discount * 100) / 100" />
+                    ' = ' + getFinalPrice(product)" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
                 <v-text-field label="价格" v-model="product.price" type="number" required :rules="[nonull, natural, price]" />

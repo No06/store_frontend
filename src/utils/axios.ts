@@ -4,6 +4,8 @@ import axios from "axios";
 import * as qs from 'qs';
 import { useTokenStore } from '@/stores/token_store';
 import type { UserAddress } from "@/entities/UserAddress";
+import type { ProductCategoryDTO } from "@/entities/ProductCategory";
+import type { UserDTO } from "@/entities/User";
 
 const userPath = "/user/"
 const productPath = "/product/"
@@ -25,8 +27,8 @@ const userUrl = url + userPath;
 export const checkToken = () => axios.get(userUrl+"checkToken", {
     headers: authHeader()
 })
-export const userLogin = (data: User) => axios.post(userUrl+"login", data)
-export const userRegister = (data: User) => axios.post(userUrl+"register", data)
+export const userLogin = (data: {username: string, password: string}) => axios.post(userUrl+"login", data)
+export const userRegister = (data: {username: string, password: string}) => axios.post(userUrl+"register", data)
 export const getUserDefaultAddressByUserId = () => axios.get(userUrl + "get/defaultAddress", {
     headers: authHeader()
 })
@@ -34,6 +36,22 @@ export const updateUserDefaultAddress = (addressId: Number) => axios.put(userUrl
     params: {
         addressId: addressId
     },
+    headers: authHeader()
+})
+export const getUserPage = (page: number, size: number) => axios.get(userUrl+"get/page", {
+    params: {
+        page: page,
+        size: size
+    },
+    headers: authHeader()
+})
+export const getAllUser = () => axios.get(userUrl+"getAll", {
+    headers: authHeader()
+})
+export const removeUserById = (id: number) => axios.delete(userUrl+"remove/byId/"+id, {
+    headers: authHeader()
+})
+export const saveUser = (user: UserDTO) => axios.put(userUrl+"save", user, {
     headers: authHeader()
 })
 
@@ -71,9 +89,6 @@ export const getAllProdByPage = (page: number, size: number, name?: string, cate
         }
     })
 }
-export const getAllProductCategory = () => {
-    return axios.get(productUrl+"getAllCategory")
-}
 export const getCountProductsByCategory = () => {
     return axios.get(productUrl+"getCountByCategory")
 }
@@ -84,6 +99,34 @@ export const getProductItemById = (id: number) => {
     return axios.get(productUrl+"getItemById/"+id)
 }
 export const getProdCount = () => axios.get(productUrl+"getCount")
+export const getProductCountByCategoryId = (categoryId: number) => {
+    return axios.get(productUrl+"get/count/byCategoryId/"+categoryId)
+}
+
+// ProductCategory
+const productCategoryUrl = url + "/product/category/"
+export const getAllProductCategory = () => {
+    return axios.get(productCategoryUrl+"getAll")
+}
+export const saveProductCategory = (category: ProductCategoryDTO) => {
+    return axios.put(productCategoryUrl+"save", category, {
+        headers: authHeader()
+    })
+}
+export const getPage = (page: number, size: number) => {
+    return axios.get(productCategoryUrl+"getPage", {
+        params: {
+            page: page,
+            size: size
+        },
+        headers: authHeader()
+    })
+}
+export const removeProductCategoryById = (id: number) => {
+    return axios.delete(productCategoryUrl+"remove/byId/"+id, {
+        headers: authHeader()
+    })
+}
 
 // Cart
 const cartUrl = url + cartPath;

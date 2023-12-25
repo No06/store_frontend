@@ -4,7 +4,7 @@ import type { UserAddress } from "./UserAddress"
 
 export interface OrderVO {
     status: OrderStatus
-    user: User
+    user: UserDTO
     orderItems: Array<OrderItemVO>
     userAddress: UserAddress
     createTime: Dayjs

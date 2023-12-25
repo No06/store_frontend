@@ -7,6 +7,9 @@ const props = defineProps({
     modelValue: {
         type: Boolean
     },
+    autoclose: {
+        type: Boolean
+    },
     title: String
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
@@ -19,6 +22,7 @@ const modelValue = computed({
     }
 })
 function submit(event: Event) {
+    if (props.autoclose) modelValue.value = false
     emit('submit', event)
 }
 </script>

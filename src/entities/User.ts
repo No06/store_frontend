@@ -1,4 +1,6 @@
-type User = {
+export type UserDTO = {
+    id: number,
     username: string,
-    password: string
+    password: string,
+    isAdmin: Boolean
 }

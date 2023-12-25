@@ -23,11 +23,19 @@ const router = createRouter({
 					children: [
 						{
 							path: '',
-							redirect: '/admin/product-manager'
+							redirect: '/admin/product-manage'
 						},
 						{
-							path: 'product-manager',
-							component: () => import('@/views/AdminView/ProductManager.vue')
+							path: 'product-manage',
+							component: () => import('@/views/AdminView/ProductManage.vue')
+						},
+						{
+							path: 'product-category-manage',
+							component: () => import('@/views/AdminView/ProductCategoryManage.vue')
+						},
+						{
+							path: 'user-manage',
+							component: () => import('@/views/AdminView/UserManage.vue')
 						},
 						{
 							path: 'order',

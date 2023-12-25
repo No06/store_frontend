@@ -4,13 +4,14 @@ import { ref, computed } from 'vue';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ErrorDialog from '@/components/Dialog/ErrorDialog.vue';
-import TrItem from '@/components/AdminView/TrItem.vue';
+import TrItem from '@/components/AdminView/ProductTrItem.vue';
 import ToolBar from '@/components/AdminView/ToolBar.vue';
 import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
 import { ProductCategoryVO } from '../../entities/ProductCategory';
+import type { Page } from '@/entities/util/Page';
 
 // 状态
 const count = ref(0)
@@ -57,8 +58,9 @@ async function search() {
             categoryMap.get(searchCategoryName),
         )
 		.then(resp => {
-            showPrds.value = resp.data.content
-            count.value = resp.data.totalElements
+            const data: Page = resp.data
+            showPrds.value = data.content
+            count.value = data.totalElements
         })
 		.catch(e => error.value = e.message)
 }
@@ -87,15 +89,15 @@ async function delProduct(product: Product) {
     committing.value = true
 
     await delProductById(product.id)
-        .then(() => showSnackBar('删除成功'))
-        .catch(e => errorDialogMsg.value = e.message)
-        .finally(() => {
+        .then(() => {
             // 非第一页并且剩余数能被10整除
             if (page.value > 1 && count.value % 10 == 0) {
                 page.value -= 1
             }
-            committing.value = false
+            showSnackBar('删除成功')
         })
+        .catch(e => errorDialogMsg.value = e.message)
+        .finally(() => committing.value = false)
     init()
 }
 function showSnackBar(msg: string) {

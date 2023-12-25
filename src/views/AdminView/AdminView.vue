@@ -3,13 +3,23 @@ const navigationItems = [
     {
         title: "商品管理",
         icon: "mdi-store-edit-outline",
-        to: 'product-manager'
+        to: 'product-manage'
     },
     {
-        title: "订单查看",
-        icon: "mdi-note-text",
-        to: 'order'
-    }
+        title: "商品类管理",
+        icon: "mdi-playlist-edit",
+        to: 'product-category-manage'
+    },
+    {
+        title: "用户管理",
+        icon: "mdi-account-edit",
+        to: 'user-manage'
+    },
+    // {
+    //     title: "订单查看",
+    //     icon: "mdi-note-text",
+    //     to: 'order'
+    // }
 ]
 </script>
 

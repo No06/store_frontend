@@ -44,7 +44,7 @@ function login() {
     alertMsg.value = ""
     isError.value = false;
     loading.value = true;
-    const user: User = {
+    const user = {
         username: username.value,
         password: password.value
     }
@@ -79,7 +79,7 @@ function switchForm() {
 async function register() {
     alertMsg.value = ""
     loading.value = true
-    const user: User = {
+    const user = {
         username: username.value,
         password: password.value
     };
