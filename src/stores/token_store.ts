@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { ref } from 'vue';
 
 export const useTokenStore = defineStore('tokenStore', () => {
@@ -16,7 +16,7 @@ export const useTokenStore = defineStore('tokenStore', () => {
     function decodeToken() {
         let decodeToken;
         try {
-            decodeToken = jwt_decode<any>(token.value!)
+            decodeToken = jwtDecode<any>(token.value!)
         } catch {
             return Object
         }

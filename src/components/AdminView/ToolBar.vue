@@ -2,11 +2,11 @@
 import { ref } from 'vue'
 import ProductAlterDialog from './ProductAlterDialog.vue';
 import { Product } from '@/entities/Product';
-import type { ProductCategoryVO } from '@/entities/ProductCategory';
+import type { ProductCategory } from '@/entities/ProductCategory';
 
 defineProps({
 	categorys: {
-		type: Array<ProductCategoryVO>,
+		type: Array<ProductCategory>,
 		default: new Array
 	},
 	count: {

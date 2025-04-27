@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { CarouselVO } from '@/entities/Carousel';
+import type { Carousel } from '@/entities/Carousel';
 import { type PropType } from 'vue';
 
 defineProps({
     carousel: {
-        type: Object as PropType<CarouselVO>,
+        type: Object as PropType<Carousel>,
         required: true
     }
 })

@@ -1,4 +1,4 @@
-import type { CartVO } from "@/entities/Cart";
+import type { Cart } from "@/entities/Cart";
 import type { Product } from "@/entities/Product"
 import axios from "axios";
 import * as qs from 'qs';
@@ -146,7 +146,7 @@ export const addCart = (productId: number, quantity: number | null) => axios.put
 export const getCartByUserId = () => axios.get(cartUrl+"list", {
     headers: authHeader()
 })
-export const updateCart = (cart: CartVO) => axios.patch(cartUrl+"update", cart, {
+export const updateCart = (cart: Cart) => axios.patch(cartUrl+"update", cart, {
     headers: authHeader()
 })
 export const deleteCart = (productId: number) => axios.delete(cartUrl+"delete", {

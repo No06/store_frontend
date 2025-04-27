@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { clearCart, getCartByUserId } from '@/utils/axios';
 import { ref, computed } from 'vue';
-import { getProductTotalPrice, type CartVO } from '@/entities/Cart';
+import { getProductTotalPrice, type Cart } from '@/entities/Cart';
 import CartItem from '@/components/CartView/CartItem.vue';
 import SettleItem from '@/components/CartView/SettleItem.vue';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
@@ -12,7 +12,7 @@ import { useOrderStore } from '@/stores/order_store';
 import { reactive } from 'vue';
 
 const isLoading = ref(false)
-const cartItems = ref(new Array<CartVO>)
+const cartItems = ref(new Array<Cart>)
 const count = ref(0)
 const snackBarStore = useSnackBarStore()
 const showWarningDialog = ref(false)
@@ -85,7 +85,7 @@ function submit() {
     router.push("/order");
 }
 // 当购物车发生变化时
-function updateCart(cart: CartVO, index: number) {
+function updateCart(cart: Cart, index: number) {
     const price = getProductTotalPrice(cart)
     cart.subtotal = price.totalPrice
     cart.totalDiscount = price.totalDiscount

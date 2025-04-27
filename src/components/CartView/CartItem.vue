@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { type CartVO } from '@/entities/Cart';
+import { type Cart } from '@/entities/Cart';
 import { deleteCart, updateCart } from '@/utils/axios';
 import { ref, computed } from 'vue';
 import { useSnackBarStore } from '@/stores/snack_bar_store';
@@ -12,7 +12,7 @@ import { nonull, postive } from '@/utils/formRules';
 
 const props = defineProps({
     cart: {
-        type: Object as PropType<CartVO>,
+        type: Object as PropType<Cart>,
         required: true
     }
 })

@@ -1,11 +1,12 @@
 import type { Dayjs } from "dayjs"
-import type { OrderItemVO } from "./OrderItem"
+import type { OrderItem } from "./OrderItem"
 import type { UserAddress } from "./UserAddress"
+import type { User } from "./User"
 
-export interface OrderVO {
+export interface Order {
     status: OrderStatus
-    user: UserDTO
-    orderItems: Array<OrderItemVO>
+    user: User
+    orderItems: Array<OrderItem>
     userAddress: UserAddress
     createTime: Dayjs
     cancelTime: Dayjs

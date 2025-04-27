@@ -5,7 +5,7 @@ import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
 import { getAllProdItemsBySpec } from '@/utils/axios';
-import type { ProductItemVO } from '@/entities/ProductItem';
+import type { ProductItem } from '@/entities/ProductItem';
 import { useSnackBarStore } from '../stores/snack_bar_store';
 
 class searchParams {
@@ -24,7 +24,7 @@ defineProps({
 })
 
 const _searchParams = ref(new searchParams)
-const products = ref<Array<ProductItemVO>>()
+const products = ref<Array<ProductItem>>()
 const isLoading = ref(true)
 const snackBar = useSnackBarStore()
 

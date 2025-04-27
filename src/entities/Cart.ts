@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import type { Product } from "./Product"
 
-export type CartVO = {
+export type Cart = {
     id: number,
     product: Product,
     quantity: number,
@@ -10,7 +10,7 @@ export type CartVO = {
     totalDiscount: Decimal // 总优惠金额（非数据库字段）
 }
 // 计算总价
-export function getProductTotalPrice(cartItem: CartVO) {
+export function getProductTotalPrice(cartItem: Cart) {
     const discount = cartItem.product.discount;
     const quantity = cartItem.quantity;
     const totalPrice = new Decimal(cartItem.product.price).times(quantity)

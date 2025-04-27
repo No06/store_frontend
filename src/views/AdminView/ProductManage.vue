@@ -10,7 +10,7 @@ import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 
 import { Product } from '@/entities/Product';
 import { delProductById, getAllProdByPage, getAllProductCategory, saveProduct } from '@/utils/axios';
-import { ProductCategoryVO } from '../../entities/ProductCategory';
+import { ProductCategory } from '../../entities/ProductCategory';
 import type { Page } from '@/entities/util/Page';
 
 // 状态
@@ -22,7 +22,7 @@ const error = ref("")
 const snackBar = ref(false)
 const snackBarMsg = ref('')
 const showPrds = ref(new Array<Product>)
-const categorys = ref(new Array<ProductCategoryVO>)
+const categorys = ref(new Array<ProductCategory>)
 const categoryMap = new Map<string, any>()
 const errorDialogMsg = ref('')
 const showErrorDialog = computed({
@@ -71,7 +71,7 @@ function searchOnly() {
 async function save(product: Product) {
     committing.value = true
     if (typeof product.category == "string") {
-        const category = new ProductCategoryVO()
+        const category = new ProductCategory()
         category.name = product.category
         product.category = category;
     }

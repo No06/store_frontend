@@ -1,9 +1,9 @@
-import type { OrderVO } from "./Order";
+import type { Order } from "./Order";
 import type { Product } from "./Product";
 
-export interface OrderItemVO {
+export interface OrderItem {
     id: Number,
     product: Product,
-    order: OrderVO,
+    order: Order,
     quantity: Number
 }

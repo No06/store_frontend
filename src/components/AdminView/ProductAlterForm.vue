@@ -6,7 +6,7 @@ import { nonull, integer, natural, price } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
 import { ProductImage } from '@/entities/ProductImage';
-import { ProductCategoryVO } from '../../entities/ProductCategory';
+import { ProductCategory } from '../../entities/ProductCategory';
 import { Product } from '../../entities/Product';
 import type { PropType } from 'vue';
 import { getFinalPrice } from '@/entities/Product';
@@ -41,7 +41,7 @@ function imageAdd(url: string) {
     }
     product.value.images.push(product_image)
 }
-const mustSelectedRule = (value: ProductCategoryVO) => {
+const mustSelectedRule = (value: ProductCategory) => {
     if (typeof value == "string") {
         if (value == "") return "不能为空"
         else return true;

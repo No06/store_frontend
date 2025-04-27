@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import CarouselProduct from '@/components/HomeView/CarouselProduct.vue';
-import type { CarouselVO } from '@/entities/Carousel';
+import type { Carousel } from '@/entities/Carousel';
 import { getAllCarousel } from '@/utils/axios';
 import { ref } from 'vue';
 import { useSnackBarStore } from '../stores/snack_bar_store';
 
-const carousels = ref(new Array<CarouselVO>);
+const carousels = ref(new Array<Carousel>);
 const isLoadding = ref(false)
 const snackBar = useSnackBarStore()
 

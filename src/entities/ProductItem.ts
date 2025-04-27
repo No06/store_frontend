@@ -1,12 +1,12 @@
-import type { ProductCategoryVO } from "./ProductCategory";
+import type { ProductCategory } from "./ProductCategory";
 import type { ProductImage } from "./ProductImage";
 
-export interface ProductItemVO {
+export interface ProductItem {
     id: number,
     name: string,
     price: number,
     discount: number,
     stock: number,
-    category: ProductCategoryVO,
+    category: ProductCategory,
     image: ProductImage
 }

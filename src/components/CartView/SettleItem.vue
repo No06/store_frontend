@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { type CartVO } from '../../entities/Cart';
+import { type Cart } from '../../entities/Cart';
 import { computed } from 'vue';
 
 const props = defineProps({
     cart: {
-        type: Object as PropType<CartVO>,
+        type: Object as PropType<Cart>,
         required: true,
     },
     index: {

@@ -6,7 +6,7 @@ import WarningDialog from '../Dialog/WarningDialog.vue';
 import LoadingDialog from '../Dialog/LoadingDialog.vue';
 import { Product } from '../../entities/Product';
 import { getProductById } from '../../utils/axios';
-import { ProductCategoryVO } from '../../entities/ProductCategory';
+import { ProductCategory } from '../../entities/ProductCategory';
 
 const props = defineProps({
     product: {
@@ -14,7 +14,7 @@ const props = defineProps({
         required: true
     },
     categorys: {
-        type: Array<ProductCategoryVO>,
+        type: Array<ProductCategory>,
         required: true
     },
 })

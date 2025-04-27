@@ -1,6 +1,6 @@
 import type { ProductImage } from "./ProductImage"
 
-export type CarouselVO = {
+export type Carousel = {
     id: number,
     product_id: number,
     title: string,

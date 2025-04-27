@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, toRefs, watch } from 'vue';
-import type { ProductItemVO } from '../../entities/ProductItem';
+import type { ProductItem } from '../../entities/ProductItem';
 import type { PropType } from 'vue';
 import { getFinalPrice } from '../../entities/Product';
 
 const props = defineProps({
     product: {
-      type: Object as PropType<ProductItemVO>,
+      type: Object as PropType<ProductItem>,
       required: true
     }
 })
