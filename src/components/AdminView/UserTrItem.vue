@@ -2,12 +2,12 @@
 import type { PropType } from 'vue';
 import UserAlterDialog from '@/components/AdminView/UserAlterDialog.vue';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
-import type { UserDTO } from '@/entities/User';
+import type { User } from '@/entities/User';
 import { ref } from 'vue';
 
 defineProps({
     item: {
-        type: Object as PropType<UserDTO>,
+        type: Object as PropType<User>,
         required: true
     }
 })

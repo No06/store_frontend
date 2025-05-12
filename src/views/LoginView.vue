@@ -83,7 +83,7 @@ async function register() {
         username: username.value,
         password: password.value
     };
-    userRegister(user)
+    await userRegister(user)
         .then(() => {
             snackBar.successMsg = "注册成功"
             switchForm()

@@ -1,16 +1,18 @@
-import type { Cart } from "@/entities/Cart";
-import type { Product } from "@/entities/Product"
+import type { Goods } from "@/entities/Goods"
 import axios from "axios";
 import * as qs from 'qs';
 import { useTokenStore } from '@/stores/token_store';
 import type { UserAddress } from "@/entities/UserAddress";
-import type { ProductCategoryDTO } from "@/entities/ProductCategory";
-import type { UserDTO } from "@/entities/User";
+import type { GoodsCategory } from "@/entities/GoodsCategory";
+import type { User } from "@/entities/User";
+import type { UpdateCartDTO } from "@/entities/dto/UpdateCartDTO";
+import type { CarouselSaveDTO } from "@/entities/dto/CarouselSaveDTO";
 
 const userPath = "/user/"
-const productPath = "/product/"
+const goodsPath = "/goods/"
 const cartPath = "/cart/"
 const userAddressPath = "/address/"
+const carouselPath = "/carousel/"
 const jwtHeaderPrefix = "Bearer "
 const authHeader = () => {
     const tokenStore = useTokenStore()
@@ -20,7 +22,7 @@ const authHeader = () => {
     };
 }
 
-export const url = "http://192.168.1.117:8080"
+export const url = "http://127.0.0.1:8081"
 
 // User
 const userUrl = url + userPath;
@@ -51,33 +53,33 @@ export const getAllUser = () => axios.get(userUrl+"getAll", {
 export const removeUserById = (id: number) => axios.delete(userUrl+"remove/byId/"+id, {
     headers: authHeader()
 })
-export const saveUser = (user: UserDTO) => axios.put(userUrl+"save", user, {
+export const saveUser = (user: User) => axios.put(userUrl+"save", user, {
     headers: authHeader()
 })
 
-// Product
-const productUrl = url + productPath;
-export const saveProduct = (product: Product) => (
-    axios.put(productUrl+'save', product, {
+// Goods
+const goodsUrl = url + goodsPath;
+export const saveGoods = (goods: Goods) => (
+    axios.put(goodsUrl+'save', goods, {
         headers: authHeader()
     })
 )
-export const delProductById = (id: number) => (
-    axios.delete(productUrl+"delete/"+id, {
+export const delGoodsById = (id: number) => (
+    axios.delete(goodsUrl+"delete/"+id, {
         headers: authHeader()
     })
 )
-export const getAllProduct = () => axios.get(productUrl+"getAll")
-export const getAllProdItemsBySpec = (params: Object) => {
-    return axios.get(productUrl+"getAllItemBySpec", {
+export const getAllGoods = () => axios.get(goodsUrl+"getAll")
+export const getAllGoodsShowItemBySpec = (params: Object) => {
+    return axios.get(goodsUrl+"getAllItemBySpec", {
         params: params,
         paramsSerializer: params => {
             return qs.stringify(params, {arrayFormat: 'comma'})
         }
     })
 }
-export const getAllProdByPage = (page: number, size: number, name?: string, categoryId?: number) => {
-    return axios.get(productUrl + "findAllByPage", {
+export const getAllGoodsByPage = (page: number, size: number, name?: string, categoryId?: number) => {
+    return axios.get(goodsUrl + "findAllByPage", {
         params: {
             page: page,
             size: size,
@@ -89,32 +91,32 @@ export const getAllProdByPage = (page: number, size: number, name?: string, cate
         }
     })
 }
-export const getCountProductsByCategory = () => {
-    return axios.get(productUrl+"getCountByCategory")
+export const getCountGoodsByCategory = () => {
+    return axios.get(goodsUrl+"getCountByCategory")
 }
-export const getProductById = (id: number) => {
-    return axios.get(productUrl+"getById/"+id)
+export const getGoodsById = (id: number) => {
+    return axios.get(goodsUrl+"getById/"+id)
 }
-export const getProductItemById = (id: number) => {
-    return axios.get(productUrl+"getItemById/"+id)
+export const getGoodsShowItemById = (id: number) => {
+    return axios.get(goodsUrl+"getItemById/"+id)
 }
-export const getProdCount = () => axios.get(productUrl+"getCount")
-export const getProductCountByCategoryId = (categoryId: number) => {
-    return axios.get(productUrl+"get/count/byCategoryId/"+categoryId)
+export const getGoodsCount = () => axios.get(goodsUrl+"getCount")
+export const getGoodsCountByCategoryId = (categoryId: number) => {
+    return axios.get(goodsUrl+"get/count/byCategoryId/"+categoryId)
 }
 
-// ProductCategory
-const productCategoryUrl = url + "/product/category/"
-export const getAllProductCategory = () => {
-    return axios.get(productCategoryUrl+"getAll")
+// GoodsCategory
+const goodsCategoryUrl = url + "/goods/category/"
+export const getAllGoodsCategory = () => {
+    return axios.get(goodsCategoryUrl+"getAll")
 }
-export const saveProductCategory = (category: ProductCategoryDTO) => {
-    return axios.put(productCategoryUrl+"save", category, {
+export const saveGoodsCategory = (category: GoodsCategory) => {
+    return axios.put(goodsCategoryUrl+"save", category, {
         headers: authHeader()
     })
 }
 export const getPage = (page: number, size: number) => {
-    return axios.get(productCategoryUrl+"getPage", {
+    return axios.get(goodsCategoryUrl+"getPage", {
         params: {
             page: page,
             size: size
@@ -122,8 +124,8 @@ export const getPage = (page: number, size: number) => {
         headers: authHeader()
     })
 }
-export const removeProductCategoryById = (id: number) => {
-    return axios.delete(productCategoryUrl+"remove/byId/"+id, {
+export const removeGoodsCategoryById = (id: number) => {
+    return axios.delete(goodsCategoryUrl+"remove/byId/"+id, {
         headers: authHeader()
     })
 }
@@ -136,9 +138,9 @@ export const getCartQuantityCount = () => axios.get(cartUrl+"quantityCount", {
 export const getCartCount = () => axios.get(cartUrl+"count", {
     headers: authHeader()
 })
-export const addCart = (productId: number, quantity: number | null) => axios.put(cartUrl+"add", null, {
+export const addCart = (goodsId: number, quantity: number | null) => axios.put(cartUrl+"add", null, {
     params: {
-        productId: productId,
+        goodsId: goodsId,
         quantity: quantity,
     },
     headers: authHeader()
@@ -146,19 +148,18 @@ export const addCart = (productId: number, quantity: number | null) => axios.put
 export const getCartByUserId = () => axios.get(cartUrl+"list", {
     headers: authHeader()
 })
-export const updateCart = (cart: Cart) => axios.patch(cartUrl+"update", cart, {
+export const updateCart = (cart: UpdateCartDTO) => axios.patch(cartUrl+"update", cart, {
     headers: authHeader()
 })
-export const deleteCart = (productId: number) => axios.delete(cartUrl+"delete", {
+export const deleteCart = (goodsId: number) => axios.delete(cartUrl+"delete", {
     params: {
-        productId: productId
+        goodsId: goodsId
     },
     headers: authHeader()
 })
 export const clearCart = () => axios.delete(cartUrl+"clear" , {
     headers: authHeader()
 })
-export const getAllCarousel = () => axios.get(url+"/carousel"+"/list")
 
 // UserAddress
 const userAddressUrl = url+userAddressPath;
@@ -175,6 +176,25 @@ export const saveAllUserAddress = (addressList: Array<UserAddress>) => axios.put
     }
 )
 export const deleteUserAddressById = (id: Number) => axios.delete(userAddressUrl+"delete", {
+    params: {
+        id: id
+    },
+    headers: authHeader()
+})
+
+// Carousel
+const carouselUrl = url + carouselPath;
+export const getAllCarousel = () => axios.get(carouselUrl+"list")
+export const getAllCarouselByPage = (page: number, size: number) => axios.get(carouselUrl+"page", {
+    params: {
+        page: page,
+        size: size
+    }
+})
+export const saveCarousel = (carousel: CarouselSaveDTO) => axios.put(carouselUrl+"save", carousel, {
+    headers: authHeader()
+})
+export const deleteCarouselById = (id: number) => axios.delete(carouselUrl+"delete", {
     params: {
         id: id
     },

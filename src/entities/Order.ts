@@ -1,28 +1,24 @@
-import type { Dayjs } from "dayjs"
-import type { OrderItem } from "./OrderItem"
-import type { UserAddress } from "./UserAddress"
-import type { User } from "./User"
+import type { OrderItem } from './OrderItem'
+import type { UserAddress } from './UserAddress'
+import type { User } from './User'
+import type { GoodsReview } from './GoodsReview'
+import type { OrderStatus } from './enum/OrderStatus'
+import type { FieldStatus } from './enum/FieldStatus'
 
 export interface Order {
-    status: OrderStatus
-    user: User
-    orderItems: Array<OrderItem>
-    userAddress: UserAddress
-    createTime: Dayjs
-    cancelTime: Dayjs
-    payTime: Dayjs
-    deliverTime: Dayjs
-    reveiveTime: Dayjs
-    reviewTime: Dayjs
-    finishTime: Dayjs
-}
-
-export enum OrderStatus {
-    CANCEL = "已取消",
-    WAITING_PAY = "待付款",
-    PAID = "已付款",
-    DELIVERED = "已发货",
-    RECEIPTED = "已收货",
-    CONFIRMED = "已确收",
-    REVIEWED = "待评价"
+  id?: number
+  status?: OrderStatus
+  user?: User // 一对一
+  review?: GoodsReview // 一对一
+  orderItems?: OrderItem[] // 一对多
+  userAddress?: UserAddress // 一对一
+  expressNumber?: string
+  createTime?: Date
+  cancelTime?: Date
+  payTime?: Date
+  deliverTime?: Date
+  receiveTime?: Date
+  reviewTime?: Date
+  finishTime?: Date
+  fieldStatus?: FieldStatus
 }

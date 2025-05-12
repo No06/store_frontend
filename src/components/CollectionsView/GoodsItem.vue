@@ -1,26 +1,28 @@
 <script lang="ts" setup>
 import { ref, toRefs, watch } from 'vue';
-import type { ProductItem } from '../../entities/ProductItem';
+import type { GoodsShowItem } from '../../entities/GoodsItem';
 import type { PropType } from 'vue';
-import { getFinalPrice } from '../../entities/Product';
+import { getFinalPrice } from '../../entities/Goods';
 
 const props = defineProps({
-    product: {
-      type: Object as PropType<ProductItem>,
+    goods: {
+      type: Object as PropType<GoodsShowItem>,
       required: true
     }
 })
-const { product } = toRefs(props)
+const { goods: goods } = toRefs(props)
 
 const imageSrc = ref("")
 const imgScale = ref(1)
 const isError = ref(false)
 const isHover = ref(false)
-const isSale = product.value.discount != 1;
-const finalPrice = getFinalPrice(props.product)
+const isSale = goods.value.discount != 1;
+const finalPrice = getFinalPrice(props.goods)
 
 try {
-    imageSrc.value = product.value.image.image_url
+    if (goods.value.photo.photo_url) {
+        imageSrc.value = goods.value.photo.photo_url
+    }
 } catch {
     isError.value = true
 }
@@ -38,18 +40,18 @@ watch(
 </script>
 
 <template>
-    <v-sheet class="ma-2" @mouseover="isHover = true" @mouseleave="isHover = false" @click="$router.push('/product/'+product.id)" style="cursor: pointer;">
-        <v-sheet class="product_image_box elevation-1 rounded-lg bg-white">
-            <img class="product_image" :src="imageSrc">
-            <div v-if="product.stock <= 0" class="out_of_stock">
+    <v-sheet class="ma-2" @mouseover="isHover = true" @mouseleave="isHover = false" @click="$router.push('/goods/'+goods.id)" style="cursor: pointer;">
+        <v-sheet class="goods_image_box elevation-1 rounded-lg bg-white">
+            <img class="goods_photo" :src="imageSrc">
+            <div v-if="goods.stock <= 0" class="out_of_stock">
                 <p class="py-2">无货</p>
             </div>
         </v-sheet>
         
-        <div class="product_info d-flex flex-column align-center my-2">
-            <p class="product_name" :class="{ underline: isHover }">{{ product.name }}</p>
-            <div class="product_price">
-                <p :class="{ original_price: isSale }">￥{{ product.price }}</p>
+        <div class="goods_info d-flex flex-column align-center my-2">
+            <p class="goods_name" :class="{ underline: isHover }" style="">{{ goods.name }}</p>
+            <div class="goods_price">
+                <p :class="{ original_price: isSale }">￥{{ goods.price }}</p>
                 <p v-if="isSale" class="current_price">￥{{ finalPrice }}</p>
             </div>
         </div>
@@ -57,12 +59,12 @@ watch(
 </template>
 
 <style lang="scss" scoped>
-.product_image_box {
+.goods_image_box {
     display: flex;
     align-items: end;
     position: relative;
     overflow: hidden;
-    .product_image {
+    .goods_photo {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -70,12 +72,19 @@ watch(
         transition: transform 0.3s;
     }
 }
-.product_info {
-    font-size: 20px;
+.goods_info {
+    font-size: 15px;
     letter-spacing: 1px;
     text-underline-offset: 5px;
+    .goods_name {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
-.product_price {
+.goods_price {
     display: flex;
     align-items: center;
     color: crimson;
@@ -106,4 +115,4 @@ watch(
     backdrop-filter: blur(2px);
     font-size: x-large;
 }
-</style>../../entities/ProductItemVO../../entities/ProductItem
+</style>

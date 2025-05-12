@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { getCountProductsByCategory } from '@/utils/axios';
+import type { GoodsCategoryWithCountVO } from '@/entities/vo/GoodsCountByCategoryVO';
+import { getCountGoodsByCategory } from '@/utils/axios';
 import { ref } from 'vue';
 
 defineProps({
@@ -9,12 +10,12 @@ defineProps({
     }
 })
 const emit = defineEmits(['filter', 'restore'])
-
-const countProducts = ref<Array<Array<any>>>()
+ 
+const countGoods = ref<Array<GoodsCategoryWithCountVO>>([])
 
 // 获取商品类型和数量
-getCountProductsByCategory()
-    .then(resp => countProducts.value = resp.data)
+getCountGoodsByCategory()
+    .then(resp => countGoods.value = resp.data)
 </script>
 
 <template>
@@ -52,8 +53,8 @@ getCountProductsByCategory()
 
             <v-list-subheader title="类别" />
             <v-list-item>
-                <v-checkbox v-for="item, index in countProducts" :key="index" :label="item[0].name + '(' + item[1] + ')'"
-                    v-model="params!.category_id" :value="item[0].id" density="compact" hide-details />
+                <v-checkbox v-for="item, index in countGoods" :key="index" :label="item.category.name + '(' + item.count + ')'"
+                    v-model="params!.category_id" :value="item.category.id" density="compact" hide-details />
             </v-list-item>
 
             <v-row class="mt-5">

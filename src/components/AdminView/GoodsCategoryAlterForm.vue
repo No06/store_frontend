@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { ProductCategoryDTO } from '@/entities/ProductCategory';
+import type { GoodsCategory } from '@/entities/GoodsCategory';
 import type { PropType } from 'vue';
 import { ref, toRef } from 'vue';
 import { nonull } from '@/utils/formRules';
 
 const props = defineProps({
     category: {
-        type: Object as PropType<ProductCategoryDTO>,
+        type: Object as PropType<GoodsCategory>,
         default: () => ({})
     }
 })

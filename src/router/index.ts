@@ -23,15 +23,19 @@ const router = createRouter({
 					children: [
 						{
 							path: '',
-							redirect: '/admin/product-manage'
+							redirect: '/admin/goods-manage'
 						},
 						{
-							path: 'product-manage',
-							component: () => import('@/views/AdminView/ProductManage.vue')
+							path: 'goods-manage',
+							component: () => import('@/views/AdminView/GoodsManage.vue')
 						},
 						{
-							path: 'product-category-manage',
-							component: () => import('@/views/AdminView/ProductCategoryManage.vue')
+							path: 'carousel-manage',
+							component: () => import('@/views/AdminView/CarouselManage.vue')
+						},
+						{
+							path: 'goods-category-manage',
+							component: () => import('@/views/AdminView/GoodsCategoryManage.vue')
 						},
 						{
 							path: 'user-manage',
@@ -44,15 +48,15 @@ const router = createRouter({
 					]
 				},
 				{
-					path: "/collections/all-products",
+					path: "/collections/all-goods",
 					component: () => import('@/views/CollectionsView.vue'),
 					props: {
-						url: url+"/product/getAllBySpec"
+						url: url+"/goods/getAllBySpec"
 					}
 				},
 				{
-					path: "/product/:id",
-					component: () => import('@/components/CollectionsView/ProductView.vue')
+					path: "/goods/:id",
+					component: () => import('@/components/CollectionsView/GoodsView.vue')
 				},
 				{
 					path: "/cart",

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { type Cart } from '@/entities/Cart';
 import { deleteCart, updateCart } from '@/utils/axios';
 import { ref, computed } from 'vue';
 import { useSnackBarStore } from '@/stores/snack_bar_store';
@@ -9,16 +8,19 @@ import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
 import { debounce } from '@/utils/debounce';
 import { nonull, postive } from '@/utils/formRules';
+import type { CartEntry } from '../../models/CartEntry';
+import type { UpdateCartDTO } from '../../entities/dto/UpdateCartDTO';
 
 const props = defineProps({
     cart: {
-        type: Object as PropType<Cart>,
+        type: Object as PropType<CartEntry>,
         required: true
     }
 })
 const emit = defineEmits(['deleted', 'modelValue'])
-const cart = props.cart
-const isOutOfStock = cart.product.stock == 0
+const cartEntry = props.cart
+const cart = cartEntry.cart
+const isOutOfStock = cart.goodsStock ? false : true;
 const quantity = computed({ // 选购数量
     get: () => cart.quantity,
     set: (newVal) => {
@@ -42,10 +44,10 @@ const isSubmited = ref(false) // 执行状态
 const showWarningDialog = ref(false) // 是否展示警告窗
 // 更新购物车商品数量
 function update() {
-    if (nonull(quantity.value.toString()) != true || postive(quantity.value) != true) {
+    if (nonull((quantity.value ?? '').toString()) != true || postive(quantity.value ?? 0) != true) {
         return
     }
-    emit('modelValue', cart);
+    emit('modelValue', cartEntry);
     _debounceSave()
 }
 // 去抖更新商品购买数量
@@ -54,24 +56,30 @@ const _debounceSave = debounce(() => {
 }, 350)
 // 执行数据库购物车商品数量更新
 async function _updateCartQuantity() {
-    await updateCart(cart)
+    await updateCart(<UpdateCartDTO>{
+        id: cart.id,
+        quantity: quantity.value,
+        isSelected: isSelected.value
+    })
         .catch(e => snackBarStore.errorMsg = e.message)
 }
 // 减
 function minus() {
-    if (quantity.value > 1) quantity.value--
+    if ((quantity.value ?? 0) > 1) quantity.value = (quantity.value ?? 0) - 1
     update()
 }
 // 加
 function plus() {
-    quantity.value++
+    quantity.value = (quantity.value ?? 0) + 1
     update()
 }
 // 删除
 function remove() {
     showWarningDialog.value = false
     isSubmited.value = true
-    deleteCart(cart.product.id)
+    if (!cart.goodsId) return 
+
+    deleteCart(cart.goodsId)
         .then(() => {
             snackBarStore.successMsg = "删除成功"
             emit('deleted')
@@ -93,15 +101,15 @@ function remove() {
                 </div>
                 <!-- 图片 -->
                 <div class="flex-0-0" style="width: 80px;">
-                    <v-img class="ma-2" aspect-ratio="1" cover :src="cart.product.images[0].image_url" />
+                    <v-img class="ma-2" aspect-ratio="1" cover :src="cart.goodsPhotoUrl" />
                 </div>
                 <!-- 商品名与描述 -->
                 <div class="text-nowrap mx-4" style="display: grid;">
-                    <h2 class="text-nowrap overflow-ellipsis">{{ cart.product.name }}</h2>
+                    <h2 class="text-nowrap overflow-ellipsis">{{ cart.goodsName }}</h2>
                     <h3 class="text-nowrap overflow-ellipsis" style="color: grey;">
-                        {{ cart.product.description == "" ? "（无描述）" : cart.product.description }}
+                        {{ cart.goodsDescription == "" ? "（无描述）" : cart.goodsDescription }}
                     </h3>
-                    <!-- {{ cart.product.name }} -->
+                    <!-- {{ cart.goods.name }} -->
                 </div>
                 <v-spacer></v-spacer>
                 <!-- 反Row -->
@@ -110,7 +118,7 @@ function remove() {
                         <!-- 总计 -->
                         <div class="d-flex flex-column pr-4 text-nowrap" style="min-width: 100px;">
                             <h3>总计</h3>
-                            <h3 class="subtotal">￥{{ cart.subtotal }}</h3>
+                            <h3 class="subtotal">￥{{ cartEntry.subtotal }}</h3>
                         </div>
                         <!-- 加减 -->
                         <div class="d-flex flex-column justify-center pr-6" style="width: 160px;">
@@ -165,4 +173,4 @@ function remove() {
     display: none;
 }
 
-</style>@/entities/Cart
+</style>

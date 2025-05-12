@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { Product, getFinalPrice } from '@/entities/Product';
-import { addCart, getProductById } from '@/utils/axios';
+import { type Goods, getFinalPrice } from '@/entities/Goods';
+import { addCart, getGoodsById } from '@/utils/axios';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import type { ProductImage } from '@/entities/ProductImage';
+import type { GoodsPhoto } from '@/entities/GoodsPhoto';
 import { preview, vPreview } from 'vue3-image-preview';
 import { useTokenStore } from '../../stores/token_store';
 import router from '../../router/index';
@@ -11,10 +11,10 @@ import { useSnackBarStore } from '../../stores/snack_bar_store';
 
 const route = useRoute()
 
-const product = ref(new Product)
+const goods = ref({} as Goods)
 const isLoadding = ref(false)
 const count = ref(1)
-const selectedImage = ref<ProductImage>()
+const selectedImage = ref<GoodsPhoto>()
 const imageIndex = ref(0)
 const isHover = ref(false)
 const description = ref([0])
@@ -31,37 +31,43 @@ function init() {
     } else {
         str = route.params.id
     }
-    getProductById(parseInt(str))
+    getGoodsById(parseInt(str))
         .then(resp => {
-            product.value = resp.data
-            selectedImage.value = product.value.images[0]
+            goods.value = resp.data
+            selectedImage.value = goods.value.photos?.[0]
         })
         .catch(e => snackBarStore.errorMsg = e.message)
         .finally(() => isLoadding.value = false)
 }
 function preImg() {
-    if (imageIndex.value == 0) {
-        imageIndex.value = product.value.images.length - 1
+    if (!goods.value.photos) return;
+    if (!imageIndex.value) {
+        imageIndex.value = goods.value.photos.length - 1
     } else {
         imageIndex.value--
     }
-    selectedImage.value = product.value.images[imageIndex.value]
+    selectedImage.value = goods.value.photos[imageIndex.value]
 }
 function nextImg() {
-    if (imageIndex.value == product.value.images.length - 1) {
+    if (!goods.value.photos) return;
+    if (imageIndex.value == goods.value.photos.length - 1) {
         imageIndex.value = 0
     } else {
         imageIndex.value++
     }
-    selectedImage.value = product.value.images[imageIndex.value]
+    selectedImage.value = goods.value.photos[imageIndex.value]
 }
 function addToCart() {
-    const product_id = product.value.id
+    const goods_id = goods.value.id
     if (token == null || token == undefined) {
         router.push("/login")
         return
     }
-    addCart(product_id, count.value)
+    if (!goods_id) {
+        snackBarStore.errorMsg = "商品ID不能为空"
+        return
+    }
+    addCart(goods_id, count.value)
         .then(() => snackBarStore.successMsg = "添加成功")
         .catch(e => snackBarStore.errorMsg = "发生错误：" + e.message)
 }
@@ -89,10 +95,10 @@ init()
                             @click="preImg" />
                         <v-list class="my-2 pa-2 elevation-3 align-center rounded-lg"
                             style="max-height: 100%; overflow: hidden;">
-                            <v-card v-for="image, index in product.images ?? null" :key="index"
+                            <v-card v-for="image, index in goods.photos ?? null" :key="index"
                                 :elevation="imageIndex == index ? 8 : 0" class="my-2" transition="fade-transition"
                                 style="cursor: pointer;" @click="() => { imageIndex = index; selectedImage = image }">
-                                <v-img width="100" aspect-ratio="1/1" :src="image.image_url" cover />
+                                <v-img width="100" aspect-ratio="1/1" :src="image.photo_url" cover />
                             </v-card>
                         </v-list>
                         <v-btn icon="mdi-menu-down" variant="text" style="font-size: 1.5rem; color: #424242;"
@@ -100,8 +106,8 @@ init()
                     </div>
                     <!-- 大图 -->
                     <div class="d-flex align-center w-100 h-auto rounded-lg border" style="overflow: hidden;">
-                        <v-img v-if="!isLoadding" v-preview aspect-ratio="1/1" cover :src="selectedImage?.image_url"
-                            @click="preview({ images: selectedImage?.image_url })" style="cursor: zoom-in;" />
+                        <v-img v-if="!isLoadding" v-preview aspect-ratio="1/1" cover :src="selectedImage?.photo_url"
+                            @click="preview({ images: selectedImage?.photo_url })" style="cursor: zoom-in;" />
                         <v-skeleton-loader v-else class="w-100 h-100" color="#E0E0E0" />
                     </div>
                 </div>
@@ -111,11 +117,11 @@ init()
                         <v-skeleton-loader :loading="isLoadding" type="list-item-two-line">
                             <div class="d-flex flex-column align-start">
                                 <!-- 商品名 -->
-                                <p class="title">{{ product.name }}</p>
+                                <p class="title">{{ goods.name }}</p>
                                 <!-- 价格 -->
                                 <div class="price">
-                                    <span :class="{ original_price: product.discount != 1 }">￥{{ product.price }}</span>
-                                    <span v-if="product.discount != 1" class="current_price">￥{{ getFinalPrice(product) }}</span>
+                                    <span :class="{ original_price: goods.discount != 1 }">￥{{ goods.price }}</span>
+                                    <span v-if="goods.discount != 1" class="current_price">￥{{ getFinalPrice(goods) }}</span>
                                 </div>
                             </div>
                         </v-skeleton-loader>
@@ -138,18 +144,18 @@ init()
 
                         <div class="d-flex flex-column-reverse h-100">
                             <v-btn size="x-large" color="primary" rounded="lg" prepend-icon="mdi-cart" style="bottom: 0;"
-                                :disabled="product.stock == 0" @click="addToCart">
+                                :disabled="goods.stock == 0" @click="addToCart">
                                 <template v-slot:prepend>
                                     <v-icon size="large"></v-icon>
                                 </template>
-                                {{ product.stock == 0 ? "无货" : "添加至购物车" }}
+                                {{ goods.stock == 0 ? "无货" : "添加至购物车" }}
                             </v-btn>
                         </div>
                     </div>
                     <!-- 商品描述 -->
                     <div v-if="!isLoadding" class="my-8">
                         <v-expansion-panels v-model="description">
-                            <v-expansion-panel title="描述" :text=product.description />
+                            <v-expansion-panel title="描述" :text=goods.description />
                         </v-expansion-panels>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import ProductItem from '@/components/CollectionsView/ProductItem.vue';
 import ErrorMessage from '../components/ErrorMessage.vue';
 import FilterBar from '@/components/CollectionsView/FilterBar.vue';
-import { getAllProdItemsBySpec } from '@/utils/axios';
-import type { ProductItem } from '@/entities/ProductItem';
+import { getAllGoodsShowItemBySpec } from '@/utils/axios';
+import type { GoodsShowItem } from '@/entities/GoodsItem';
+import GoodsItem from '@/components/CollectionsView/GoodsItem.vue';
 import { useSnackBarStore } from '../stores/snack_bar_store';
 
 class searchParams {
@@ -24,14 +24,14 @@ defineProps({
 })
 
 const _searchParams = ref(new searchParams)
-const products = ref<Array<ProductItem>>()
+const goods = ref<Array<GoodsShowItem>>()
 const isLoading = ref(true)
 const snackBar = useSnackBarStore()
 
 function init() {
     isLoading.value = true
-    getAllProdItemsBySpec(_searchParams.value)
-        .then(resp => products.value = resp.data)
+    getAllGoodsShowItemBySpec(_searchParams.value)
+        .then(resp => goods.value = resp.data)
         .catch(snackBar.showAxiosError)
         .finally(() => isLoading.value = false)
 }
@@ -53,11 +53,11 @@ init()
         </v-container>
         <v-list v-else-if="!snackBar.showErrorSnackBar" class="pa-5 w-100 h-100">
             <v-row>
-                <v-col v-for="n in products" :key="n.id" cols="3">
-                    <product-item :product="n" />
+                <v-col v-for="n in goods" :key="n.id" cols="2">
+                    <goods-item :goods="n" />
                 </v-col>
             </v-row>
         </v-list>
         <error-message v-else>{{ snackBar.errorMsg }}</error-message>
     </div>
-</template>@/entities/ProductItem
+</template>

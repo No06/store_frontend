@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ProductCategory } from '@/entities/ProductCategory';
+import type { GoodsCategory } from '@/entities/GoodsCategory';
 
 export const useCategoryStore = defineStore('categoryStore', () => {
-    const categorys = ref(new Array<ProductCategory>)
+    const categorys = ref(new Array<GoodsCategory>)
     function getCategorysNames() {
         return categorys.value.map((item) => item.name)
     }

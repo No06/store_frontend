@@ -33,4 +33,4 @@ const decodeToken = tokenStore.decodeToken()
             />
         </v-expansion-panels> -->
     </div>
-</template>@/stores/token_store
+</template>

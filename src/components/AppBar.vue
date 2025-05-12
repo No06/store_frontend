@@ -39,7 +39,7 @@ const navigationItems = [
     },
     {
         name: "全部商品",
-        path: "/collections/all-products",
+        path: "/collections/all-goods",
     }
 ]
 </script>

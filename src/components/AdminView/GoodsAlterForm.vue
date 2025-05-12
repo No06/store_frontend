@@ -5,25 +5,25 @@ import draggable from 'vuedraggable';
 import { nonull, integer, natural, price } from '@/utils/formRules'
 import WarningDialog from '../Dialog/WarningDialog.vue';
 import ImageAddDialog from './ImageAddDialog.vue';
-import { ProductImage } from '@/entities/ProductImage';
-import { ProductCategory } from '../../entities/ProductCategory';
-import { Product } from '../../entities/Product';
 import type { PropType } from 'vue';
-import { getFinalPrice } from '@/entities/Product';
+import { getFinalPrice } from '@/entities/Goods';
+import type { GoodsCategory } from '@/entities/GoodsCategory';
+import type { GoodsSaveDto } from '../../entities/dto/GoodsSaveDTO';
+import type { GoodsPhotoSaveDTO } from '@/entities/dto/GoodsPhotoSaveDTO';
 
 // 参数
 const props = defineProps({
-    product: {
-        type: Object as PropType<Product>,
-        default: Product
+    goods: {
+        type: Object as PropType<GoodsSaveDto>,
+        default: {}
     },
     categorys: Array
 })
 const emit = defineEmits(['submit'])
 
 const isValidated = ref(false)
-const product = toRef(props, 'product')
-const _discount = ref<Number>(product.value.discount * 100)
+const goods = toRef(props, 'goods')
+const _discount = ref<Number>(goods.value.discount ?? 0 * 100)
 
 // 表单规则
 const discount = (value: any) => {
@@ -32,27 +32,23 @@ const discount = (value: any) => {
 }
 function discountUpdate(newValue: any) {
     _discount.value = newValue
-    product.value.discount = newValue / 100
+    goods.value.discount = newValue / 100
 }
 function imageAdd(url: string) {
-    const product_image: ProductImage = {
-        image_url: url,
-        product: product.value.id,
+    const goods_photo: GoodsPhotoSaveDTO = {
+        photo_url: url,
     }
-    product.value.images.push(product_image)
+    goods.value.photos?.push(goods_photo)
 }
-const mustSelectedRule = (value: ProductCategory) => {
-    if (typeof value == "string") {
-        if (value == "") return "不能为空"
-        else return true;
-    }
-    if (value.name == undefined || value.name == "") return "不能为空"
+const mustSelectedRule = (value: GoodsCategory | null) => {
+    if (!value) return "不能为空"
     return true
 }
 // 提交更改
 function submit() {
     // 表单验证成功才能提交
-    if (isValidated.value) emit('submit', product.value)
+    console.log(goods.value)
+    if (isValidated.value) emit('submit', goods.value)
 }
 </script>
 
@@ -61,23 +57,23 @@ function submit() {
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
-                <v-combobox label="类别" v-model="product.category" :items="categorys" item-title="name" item-value="id"
-                    :rules="[mustSelectedRule]" return-object @update:menu="console.log(product.category)" />
+                <v-combobox label="类别" v-model="goods.category" :items="categorys" item-title="name" item-value="id"
+                    :rules="[mustSelectedRule]" return-object @update:menu="console.log(goods.category)" />
             </v-col>
             <v-col cols="12" sm="6" md="6">
-                <v-text-field label="商品名" v-model="product.name" :rules="[nonull]" />
+                <v-text-field label="商品名" v-model="goods.name" :rules="[nonull]" />
             </v-col>
             <v-col cols="12" sm="6" md="3">
-                <v-text-field label="库存" v-model="product.stock" type="number" :rules="[nonull, natural, integer]" />
+                <v-text-field label="库存" v-model="goods.stock" type="number" :rules="[nonull, natural, integer]" />
             </v-col>
 
             <!-- 价格 -->
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格预览" readonly :model-value="product.price + ' * ' + product.discount +
-                    ' = ' + getFinalPrice(product)" />
+                <v-text-field label="价格预览" readonly :model-value="goods.price + ' * ' + goods.discount +
+                    ' = ' + getFinalPrice(goods)" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-                <v-text-field label="价格" v-model="product.price" type="number" required :rules="[nonull, natural, price]" />
+                <v-text-field label="价格" v-model="goods.price" type="number" required :rules="[nonull, natural, price]" />
             </v-col>
             <v-col cols="12" sm="6" md="4">
                 <v-text-field label="折扣（%）" v-model="_discount" :counter="3" type="number"
@@ -86,7 +82,7 @@ function submit() {
 
             <!-- 描述 -->
             <v-col cols="12">
-                <v-textarea clearable clear-icon="mdi-close-circle" label="商品描述" v-model="product.description" />
+                <v-textarea clearable clear-icon="mdi-close-circle" label="商品描述" v-model="goods.description" />
             </v-col>
 
             <!-- 图片 -->
@@ -100,19 +96,19 @@ function submit() {
                     </v-btn>
                 </div>
                 <v-col>
-                    <draggable v-model="product.images" item-key="rank">
+                    <draggable v-model="goods.photos" item-key="rank">
                         <template #item="{ element, index }">
-                            <v-list-item :title="element.image_url" variant="tonal" class="mb-2" rounded
+                            <v-list-item :title="element.photo_url" variant="tonal" class="mb-2" rounded
                                 style="cursor: pointer">
                                 <!-- 图片 -->
                                 <template #prepend>
-                                    <v-img :width="50" aspect-ratio="1/1" cover :src="element.image_url" class="mr-3" />
+                                    <v-img :width="50" aspect-ratio="1/1" cover :src="element.photo_url" class="mr-3" />
                                 </template>
                                 <!-- 删除按钮 -->
                                 <template #append>
                                     <v-btn icon="mdi-delete" variant="text">
                                         <i class="mdi-delete mdi v-icon notranslate v-icon--size-default" />
-                                        <warning-dialog title="确定要删除吗" @submit="product.images.splice(index, 1)" />
+                                        <warning-dialog title="确定要删除吗" @submit="goods.photos?.splice(index, 1)" />
                                     </v-btn>
                                 </template>
                             </v-list-item>

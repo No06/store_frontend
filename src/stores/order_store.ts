@@ -1,8 +1,8 @@
 import type { Cart } from "@/entities/Cart";
-import type { ProductOrder } from "@/entities/util/ProductOrder";
+import type { GoodsOrder } from "@/models/GoodsOrder";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 export const useOrderStore = defineStore("orderStore", () => {
-    const orders = ref<ProductOrder[] | Cart[]>();
+    const orders = ref<GoodsOrder[] | Cart[]>();
     return { orders };
 })

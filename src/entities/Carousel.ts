@@ -1,10 +1,9 @@
-import type { ProductImage } from "./ProductImage"
+import type { Goods } from './Goods'
 
-export type Carousel = {
-    id: number,
-    product_id: number,
-    title: string,
-    image: ProductImage,
-    description: string,
-    subDescription?: string
+export interface Carousel {
+  id?: number
+  goods?: Goods // 与Goods的一对一
+  title?: string
+  description?: string
+  subDescription?: string
 }

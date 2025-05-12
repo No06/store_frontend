@@ -1,9 +1,9 @@
 import type { Order } from "./Order";
-import type { Product } from "./Product";
+import type { Goods } from "./Goods";
 
 export interface OrderItem {
-    id: Number,
-    product: Product,
-    order: Order,
-    quantity: Number
+  id?: number
+  goods?: Goods // 与Goods的一对一
+  order?: Order // 与Order的一对一
+  quantity?: number
 }

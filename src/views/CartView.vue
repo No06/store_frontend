@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { clearCart, getCartByUserId } from '@/utils/axios';
 import { ref, computed } from 'vue';
-import { getProductTotalPrice, type Cart } from '@/entities/Cart';
 import CartItem from '@/components/CartView/CartItem.vue';
 import SettleItem from '@/components/CartView/SettleItem.vue';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
 import { useSnackBarStore } from '@/stores/snack_bar_store';
 import Decimal from 'decimal.js';
-import router from '@/router';
-import { useOrderStore } from '@/stores/order_store';
 import { reactive } from 'vue';
+import { getGoodsTotalPrice, type CartEntry } from '../models/CartEntry';
+import type { CartVO } from '../entities/vo/CartVO';
 
 const isLoading = ref(false)
-const cartItems = ref(new Array<Cart>)
+const cartEntrys = ref<CartEntry[]>([])
 const count = ref(0)
 const snackBarStore = useSnackBarStore()
 const showWarningDialog = ref(false)
@@ -24,9 +23,17 @@ async function init() {
     isLoading.value = true
     await getCartByUserId()
         .then(resp => {
-            cartItems.value = resp.data
-            cartItems.value.forEach(updateCart)
-            count.value = cartItems.value.length
+            console.log(resp.data)
+            cartEntrys.value = (resp.data as CartVO[]).map((e: CartVO) => {
+                const price = getGoodsTotalPrice(e)
+                return {
+                    cart: e,
+                    subtotal: price.totalPrice,
+                    totalDiscount: price.totalDiscount,
+                } as CartEntry
+            });
+            cartEntrys.value.forEach(updateCart)
+            count.value = cartEntrys.value.length
         })
         .catch(e => snackBarStore.errorMsg = e.message)
         .finally(() => isLoading.value = false)
@@ -36,10 +43,10 @@ const sum = computed({
     get: () => {
         let sum = new Decimal(0);
         totalDiscountSum = new Decimal(0);
-        for (let i = 0; i < cartItems.value.length; i++) {
+        for (let i = 0; i < cartEntrys.value.length; i++) {
             // 如果是被选中的才被计算到总计
             if (selectedItems.has(i)) {
-                const cart = cartItems.value[i];
+                const cart = cartEntrys.value[i];
                 sum = sum.plus(cart.subtotal)
                 totalDiscountSum = totalDiscountSum.plus(cart.totalDiscount)
             }
@@ -79,16 +86,18 @@ async function clear() {
     init()
 }
 // 结算
+// TODO: 结算功能
 function submit() {
-    const orderStore = useOrderStore()
-    orderStore.orders = cartItems.value;
-    router.push("/order");
+    // const orderStore = useOrderStore()
+    // orderStore.orders = cartEntrys.value;
+    // router.push("/order");
 }
 // 当购物车发生变化时
-function updateCart(cart: Cart, index: number) {
-    const price = getProductTotalPrice(cart)
-    cart.subtotal = price.totalPrice
-    cart.totalDiscount = price.totalDiscount
+function updateCart(entry: CartEntry, index: number) {
+    const cart = entry.cart;
+    const price = getGoodsTotalPrice(cart)
+    entry.subtotal = price.totalPrice
+    entry.totalDiscount = price.totalDiscount
     if (cart.isSelected) {
         selectedItems.add(index);
     } else {
@@ -105,11 +114,11 @@ init()
             <v-progress-circular :size="50" color="primary" indeterminate />
         </div>
         <!-- 购物车列表 -->
-        <v-list v-else-if="cartItems.length" class="w-100">
+        <v-list v-else-if="cartEntrys.length" class="w-100">
             <div class="list ma-8">
                 <h2 class="pb-4">总数：{{ count }}</h2>
-                <cart-item v-for="(cart, i) in cartItems" :key="i" :cart="cart" @deleted="init"
-                    @model-value="(cart) => updateCart(cart, i)" />
+                <cart-item v-for="(cart, i) in cartEntrys" :key="i" :cart="cart" @deleted="init"
+                    @model-value="(cart: CartEntry) => updateCart(cart, i)" />
             </div>
         </v-list>
         <!-- 当购物车为空时 -->
@@ -125,7 +134,7 @@ init()
                 <div class="h-100">
                     <h2>购物单</h2>
                     <v-divider class="pb-2" />
-                    <settle-item v-for="(index, i) in selectedItems" :key="i" :cart="cartItems[index]" :index="i + 1" />
+                    <settle-item v-for="(index, i) in selectedItems" :key="i" :cart-entry="cartEntrys[index]" :index="i + 1" />
                 </div>
             </v-list>
 
@@ -172,4 +181,4 @@ init()
     display: flex;
     flex-direction: column;
 }
-</style>@/entities/Cart
+</style>

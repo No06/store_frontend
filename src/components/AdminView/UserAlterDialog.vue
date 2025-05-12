@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, type PropType } from 'vue';
 import DialogAction from '@/components/Dialog/DialogAction.vue';
-import { type UserDTO } from '../../entities/User';
+import { type User } from '../../entities/User';
 import UserAlterForm from './UserAlterForm.vue';
 
 defineProps({
     user: {
-        type: Object as PropType<UserDTO>
+        type: Object as PropType<User>
     },
     label: String
 })
@@ -14,9 +14,9 @@ const emit = defineEmits(["submit", "cancel"])
 
 const open = ref(false)
 
-function submit(category: UserDTO) {
+function submit(user: User) {
     open.value = false
-    emit("submit", category)
+    emit("submit", user)
 }
 function cancel() {
     open.value = false

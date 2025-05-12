@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, toRef, type PropType } from 'vue';
 import { nonull } from '@/utils/formRules';
-import type { UserDTO } from '../../entities/User';
+import type { User } from '../../entities/User';
 
 const props = defineProps({
     user: {
-        type: Object as PropType<UserDTO>,
+        type: Object as PropType<User>,
         default: () => ({})
     }
 })

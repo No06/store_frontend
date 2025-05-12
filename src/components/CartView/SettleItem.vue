@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { type Cart } from '../../entities/Cart';
 import { computed } from 'vue';
+import type { CartEntry } from '../../models/CartEntry';
 
 const props = defineProps({
-    cart: {
-        type: Object as PropType<Cart>,
+    cartEntry: {
+        type: Object as PropType<CartEntry>,
         required: true,
     },
     index: {
@@ -13,7 +13,8 @@ const props = defineProps({
         required: true,
     }
 })
-const isOnSale = computed(() => props.cart.product.discount != 1)
+const cart = props.cartEntry.cart
+const isOnSale = computed(() => props.cartEntry.cart.goodsDiscount != 1)
 </script>
 
 <template>
@@ -22,17 +23,17 @@ const isOnSale = computed(() => props.cart.product.discount != 1)
         <div class="w-100">
             <v-row no-gutters>
                 <v-col>
-                    <h3>{{ cart.product.name }}</h3>
+                    <h3>{{ cart.goodsName }}</h3>
                 </v-col>
                 <h3 class=" align-self-end" style="color:darkgrey;">x {{ cart.quantity }}</h3>
             </v-row>
             <div class="d-flex" style="color: grey;">
                 <h4 class="pr-1">
-                    {{ cart.product.price }} 
-                    {{ isOnSale ? "x " + cart.product.discount : "" }} x {{ cart.quantity }} =
+                    {{ cart.goodsPrice }} 
+                    {{ isOnSale ? "x " + cart.goodsDiscount : "" }} x {{ cart.quantity }} =
                 </h4>
                 <h4 :class="{ on_sale: isOnSale }">
-                    ￥{{ cart.subtotal }}
+                    ￥{{ cartEntry.subtotal }}
                 </h4>
             </div>
         </div>
@@ -43,4 +44,4 @@ const isOnSale = computed(() => props.cart.product.discount != 1)
 .on_sale {
     color: green;
 }
-</style>../../entities/Cart
+</style>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { Carousel } from '@/entities/Carousel';
 import { type PropType } from 'vue';
+import type { CarouselVO } from '../../entities/vo/CarouselVO';
 
 defineProps({
     carousel: {
-        type: Object as PropType<Carousel>,
+        type: Object as PropType<CarouselVO>,
         required: true
     }
 })
@@ -14,7 +14,7 @@ defineProps({
     <v-carousel-item>
         <v-sheet height="100%" width="100%" class="d-flex">
             <div class="image-box" style="flex: 1;">
-                <img :src="carousel.image.image_url" class="image" />
+                <img :src="carousel.photo_url" class="image" />
             </div>
 
             <div class="font-wlcmg d-flex align-center" style="flex: 1">
@@ -30,7 +30,7 @@ defineProps({
                     <div class="d-flex mt-16 w-100">
                         <v-spacer />
                         <v-btn color="primary" rounded="lg" size="x-large" prepend-icon="mdi-cart" elevation="5"
-                            @click="$router.push('/product/' + carousel.product_id)">
+                            @click="$router.push('/goods/' + carousel.goodsId)">
                             <template v-slot:prepend>
                                 <v-icon color="" size="32" />
                             </template>
@@ -77,4 +77,4 @@ $color-primaryContainer : rgb(var(--v-theme-primaryContainer));
     font-family: "jf-openhuninn";
     color: #7F7E7D;
 }
-</style>@/entities/Carousel
+</style>

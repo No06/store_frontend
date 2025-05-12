@@ -2,15 +2,15 @@
 import { computed } from 'vue'
 
 import DialogAction from '../Dialog/DialogAction.vue';
-import ProductAlterForm from './ProductAlterForm.vue';
-import { ProductImage } from '@/entities/ProductImage';
-import { Product } from '@/entities/Product';
+import GoodsAlterForm from './GoodsAlterForm.vue';
+import { type GoodsPhoto } from '@/entities/GoodsPhoto';
 import type { PropType } from 'vue';
+import type { GoodsSaveDto } from '../../entities/dto/GoodsSaveDTO';
 
 const props = defineProps({
 	lable: String,
-	product: {
-		type: Object as PropType<Product>,
+	goods: {
+		type: Object as PropType<GoodsSaveDto>,
 	},
 	categorys: {
 		type: Array,
@@ -29,10 +29,10 @@ const open = computed({
 })
 
 // 方法
-function submit(product: Product) {
+function submit(goods: GoodsSaveDto) {
 	open.value = false
-	product.images.forEach((item: ProductImage, index: number) => (item.rank = index));
-	emit('submit', product)
+	goods.photos?.forEach((item: GoodsPhoto, index: number) => (item.rank = index));
+	emit('submit', goods)
 }
 function cancle() {
 	open.value = false
@@ -46,11 +46,11 @@ function cancle() {
 			<v-card-title>{{ lable }}</v-card-title>
 			<v-card-text>
 				<v-container>
-					<product-alter-form :product="product" :categorys="categorys" @submit="submit">
+					<GoodsAlterForm :goods="goods" :categorys="categorys" @submit="submit">
 						<template #action>
 							<dialog-action @cancel="cancle"/>
 						</template>
-					</product-alter-form>
+					</GoodsAlterForm>
 				</v-container>
 			</v-card-text>
 		</v-card>

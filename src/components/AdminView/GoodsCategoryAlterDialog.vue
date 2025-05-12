@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import { type ProductCategoryDTO } from '../../entities/ProductCategory';
+import { type GoodsCategory } from '../../entities/GoodsCategory';
 import { ref } from 'vue';
 import DialogAction from '@/components/Dialog/DialogAction.vue';
-import ProductCategoryAlterForm from '@/components/AdminView/ProductCategoryAlterForm.vue';
+import ProductCategoryAlterForm from '@/components/AdminView/GoodsCategoryAlterForm.vue';
 
 defineProps({
     category: {
-        type: Object as PropType<ProductCategoryDTO>
+        type: Object as PropType<GoodsCategory>
     },
     label: String
 })
@@ -15,7 +15,7 @@ const emit = defineEmits(["submit", "cancel"])
 
 const open = ref(false)
 
-function submit(category: ProductCategoryDTO) {
+function submit(category: GoodsCategory) {
     open.value = false
     emit("submit", category)
 }

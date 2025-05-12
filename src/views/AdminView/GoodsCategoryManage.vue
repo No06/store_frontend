@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ProductCategoryVO, type ProductCategoryDTO } from '../../entities/ProductCategory';
 import { useSnackBarStore } from '@/stores/snack_bar_store';
 import WarningDialog from '@/components/Dialog/WarningDialog.vue';
-import ProductCategoryAlterDialog from '@/components/AdminView/ProductCategoryAlterDialog.vue';
+import GoodsCategoryAlterDialog from '@/components/AdminView/GoodsCategoryAlterDialog.vue';
 import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
-import { saveProductCategory, getPage, removeProductCategoryById } from '../../utils/axios';
-import type { Page } from '@/entities/util/Page';
+import { saveGoodsCategory, getPage, removeGoodsCategoryById } from '../../utils/axios';
+import type { Page } from '@/models/Page';
+import type { GoodsCategory } from '@/entities/GoodsCategory';
 
 const isLoading = ref(false)
-var categorys: Array<ProductCategoryVO>
+var categorys: Array<GoodsCategory>
 const snackbar = useSnackBarStore()
 const submitting = ref(false)
 const count = ref(0)
@@ -21,7 +21,7 @@ function init(newPageVal?: number) {
     if (newPageVal) page.value = newPageVal;
     getPage(page.value, size.value)
         .then(resp => {
-            const data: Page = resp.data
+            const data: Page<GoodsCategory> = resp.data
             categorys = data.content
             count.value = data.totalElements
         })
@@ -36,7 +36,7 @@ function deleteCategory(id?: number) {
         return
     }
     submitting.value = true
-    removeProductCategoryById(id)
+    removeGoodsCategoryById(id)
         .then(() => {
             if (page.value > 1 && (count.value - 1) % 10 == 0) {
                 page.value -= 1
@@ -47,9 +47,9 @@ function deleteCategory(id?: number) {
         .catch(snackbar.showAxiosError)
         .finally(() => submitting.value = false)
 }
-function save(category: ProductCategoryDTO) {
+function save(category: GoodsCategory) {
     submitting.value = true
-    saveProductCategory(category)
+    saveGoodsCategory(category)
         .then(() => {
             snackbar.successMsg = "编辑成功"
             init()
@@ -71,7 +71,7 @@ init()
             <!-- 添加按钮 -->
             <v-btn class="me-3" color="primary" prepend-icon="mdi-plus" variant="flat" size="large" rounded>
 				添加
-				<product-category-alter-dialog label="添加商品类" @submit="save" />
+				<GoodsCategoryAlterDialog label="添加商品类" @submit="save" />
 			</v-btn>
         </div>
         <v-list class="px-4 py-2 h-100">
@@ -79,7 +79,7 @@ init()
                 <thead>
                     <tr>
                         <th class="text-left">
-                            商品名名称
+                            商品类
                         </th>
                         <th class="text-left">
                             描述
@@ -100,7 +100,7 @@ init()
                             <v-btn variant="text" icon="mdi-pencil" size="small">
                                 <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
                                     aria-hidden="true" />
-                                <product-category-alter-dialog label="修改商品类信息"
+                                <GoodsCategoryAlterDialog label="修改商品类信息"
                                     :category="JSON.parse(JSON.stringify(item))" @submit="save" />
                             </v-btn>
                             <v-btn variant="text" icon="mdi-delete" size="small">

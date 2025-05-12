@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getUserPage, removeUserById, saveUser } from '../../utils/axios';
-import type { Page } from '../../entities/util/Page';
+import type { Page } from '../../models/Page';
 import { useSnackBarStore } from '../../stores/snack_bar_store';
-import type { UserDTO } from '@/entities/User';
+import type { User } from '@/entities/User';
 import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
 import UserTrItem from '@/components/AdminView/UserTrItem.vue';
 
@@ -13,13 +13,13 @@ const count = ref(0)
 const page = ref(1)
 const size = ref(10)
 const submitting = ref(false)
-var users: Array<UserDTO>
+var users: Array<User>
 
 function init() {
     isLoading.value = true
     getUserPage(page.value, size.value)
         .then(resp => {
-            const data: Page = resp.data
+            const data: Page<User> = resp.data
             count.value = data.totalElements
             users = data.content
         })
@@ -27,7 +27,7 @@ function init() {
         .finally(() => isLoading.value = false)
 }
 
-function save(user: UserDTO) {
+function save(user: User) {
     submitting.value = true
     saveUser(user)
         .then(() => {
@@ -85,7 +85,7 @@ init()
                 </thead>
                 <tbody>
                     <user-tr-item v-for="(item, i) in users" :key="i" :item="item" @update="save"
-                        @remove="removeById(item.id)" />
+                        @remove="() => { if (item.id) removeById(item.id) }" />
                 </tbody>
             </v-table>
         </v-list>
