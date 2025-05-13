@@ -3,13 +3,13 @@ import { computed } from 'vue'
 
 import DialogAction from '@/components/Dialog/DialogAction.vue';
 import type { PropType } from 'vue';
-import type { UserAddress } from '../../entities/UserAddress';
 import UserAddressAlterForm from './UserAddressAlterForm.vue';
+import type { UserAddressSaveDTO } from '../../entities/dto/UserAddressSaveDTO';
 
 const props = defineProps({
 	lable: String,
 	address: {
-		type: Object as PropType<UserAddress>,
+		type: Object as PropType<UserAddressSaveDTO>,
 	},
 	modelValue: Boolean
 })
@@ -24,7 +24,7 @@ const open = computed({
 })
 
 // 方法
-function submit(address: UserAddress) {
+function submit(address: UserAddressSaveDTO) {
 	open.value = false
 	emit('submit', address)
 }

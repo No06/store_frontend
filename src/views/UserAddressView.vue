@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { deleteUserAddressById, getUserAddressByUserId, getUserDefaultAddressByUserId, saveUserAddress, updateUserDefaultAddress } from '../utils/axios';
-import type { UserAddress } from '@/entities/UserAddress';
 import { useSnackBarStore } from '../stores/snack_bar_store';
 import UserAddressItem from '@/components/UserAddressView/UserAddressItem.vue';
 import { ref } from 'vue';
 import UserAddressAlterDialog from '@/components/UserAddressView/UserAddressAlterDialog.vue';
 import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
+import type { UserAddressSaveDTO } from '@/entities/dto/UserAddressSaveDTO';
+import type { UserAddressVO } from '../entities/vo/UserAddressVO';
 
-var addressList = new Array<UserAddress>
+var addressList = new Array<UserAddressVO>
 var count = 0;
 const isLoading = ref(false)
 const openAddDialog = ref(false)
 const committing = ref(false)
-const tempObject = ref<UserAddress>({} as UserAddress)
+const tempObject = ref<UserAddressSaveDTO>({} as UserAddressSaveDTO)
 const selectedId = ref<number>()
 const snackBar = useSnackBarStore()
 
@@ -39,7 +40,7 @@ function updateDefaultAddress(addressId: Number) {
         .catch(snackBar.showAxiosError)
 }
 // 添加
-function addSubmit(address: UserAddress) {
+function addSubmit(address: UserAddressSaveDTO) {
     committing.value = true
     saveUserAddress(address)
         .then(() => {
@@ -61,7 +62,7 @@ const doDelete = (id: Number) => {
         .finally(() => committing.value = false)
 }
 // 编辑
-function alterSubmit(address: UserAddress) {
+function alterSubmit(address: UserAddressSaveDTO) {
     committing.value = true
     saveUserAddress(address)
         .then(() => {
@@ -89,7 +90,7 @@ init()
                     <v-btn variant="flat" color="primary" prepend-icon="mdi-plus">
                         添加地址
                         <user-address-alter-dialog v-model="openAddDialog" lable="添加收货地址" :address="tempObject"
-                            @update:model-value="(tempObject = {} as UserAddress)" @submit="addSubmit" />
+                            @update:model-value="(tempObject = {} as UserAddressSaveDTO)" @submit="addSubmit" />
                     </v-btn>
                 </v-row>
             </v-col>
