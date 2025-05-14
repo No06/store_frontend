@@ -31,15 +31,6 @@ export const checkToken = () => axios.get(userUrl+"checkToken", {
 })
 export const userLogin = (data: {username: string, password: string}) => axios.post(userUrl+"login", data)
 export const userRegister = (data: {username: string, password: string}) => axios.post(userUrl+"register", data)
-export const getUserDefaultAddressByUserId = () => axios.get(userUrl + "get/defaultAddress", {
-    headers: authHeader()
-})
-export const updateUserDefaultAddress = (addressId: Number) => axios.put(userUrl+"update/defaultAddress", null, {
-    params: {
-        addressId: addressId
-    },
-    headers: authHeader()
-})
 export const getUserPage = (page: number, size: number) => axios.get(userUrl+"get/page", {
     params: {
         page: page,
@@ -176,6 +167,12 @@ export const saveAllUserAddress = (addressList: Array<UserAddress>) => axios.put
     }
 )
 export const deleteUserAddressById = (id: Number) => axios.delete(userAddressUrl+"delete", {
+    params: {
+        id: id
+    },
+    headers: authHeader()
+})
+export const setDefaultUserAddress = (id: number) => axios.patch(userAddressUrl+"setDefault", null, {
     params: {
         id: id
     },
