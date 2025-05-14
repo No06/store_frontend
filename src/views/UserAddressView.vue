@@ -39,11 +39,11 @@
             .catch(snackBar.showAxiosError)
     }
     // 添加
-    function addSubmit(address: UserAddressSaveDTO) {
+    function save(address: UserAddressSaveDTO) {
         committing.value = true
         saveUserAddress(address)
             .then(() => {
-                snackBar.successMsg = '添加成功'
+                snackBar.successMsg = address.id == null ? '添加成功' : '修改成功'
                 init()
             })
             .catch(snackBar.showAxiosError)
@@ -55,17 +55,6 @@
         deleteUserAddressById(id)
             .then(() => {
                 snackBar.successMsg = '删除成功'
-                init()
-            })
-            .catch(snackBar.showAxiosError)
-            .finally(() => (committing.value = false))
-    }
-    // 编辑
-    function alterSubmit(address: UserAddressSaveDTO) {
-        committing.value = true
-        saveUserAddress(address)
-            .then(() => {
-                snackBar.successMsg = '编辑成功'
                 init()
             })
             .catch(snackBar.showAxiosError)
@@ -89,13 +78,13 @@
                     <v-btn variant="flat" color="primary" prepend-icon="mdi-plus">
                         添加地址
                         <user-address-alter-dialog v-model="openAddDialog" lable="添加收货地址" :address="tempObject"
-                            @update:model-value="tempObject = {} as UserAddressSaveDTO" @submit="addSubmit" />
+                            @update:model-value="tempObject = {} as UserAddressSaveDTO" @submit="save" />
                     </v-btn>
                 </v-row>
             </v-col>
             <v-sheet class="d-flex flex-wrap">
                 <user-address-item v-for="(address, i) in addressList" :key="i" :address="address"
-                    :selected-id="selectedAddressId" @deleted="doDelete(address.id)" @update="alterSubmit"
+                    :selected-id="selectedAddressId" @deleted="doDelete(address.id)" @update="save"
                     @set-default="updateDefaultAddress(address)"
                     @update:selected-id="selectedAddressId = address.id" />
             </v-sheet>
