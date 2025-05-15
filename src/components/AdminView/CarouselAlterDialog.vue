@@ -34,13 +34,13 @@ const emit = defineEmits(['submit'])
         <v-card>
             <v-card-title>{{ isModify ? '修改轮播图' : '添加轮播图' }}</v-card-title>
             <v-card-text>
-                <v-form @submit.prevent="() => emit('submit', dto)">
+                <v-form @submit.prevent="() => emit('submit', carouselSaveDTO)">
                     <v-row>
                         <v-col>
-                            <v-text-field name="title" label="标题" :rules="[nonull]" counter="16" v-model="dto.title" />
-                            <v-select name="goods" label="商品" :items="goodsList" item-title="name" item-value="id" :rules="[nonull]" v-model="dto.goodsId" />
-                            <v-text-field name="description" label="描述" counter="30" v-model="dto.description" />
-                            <v-text-field name="subDescription" label="副描述" counter="30" v-model="dto.subDescription" />
+                            <v-text-field name="title" label="标题" :rules="[nonull]" counter="16" v-model="carouselSaveDTO.title" />
+                            <v-select name="goods" label="商品" :items="goodsList" item-title="name" item-value="id" :rules="[nonull]" v-model="carouselSaveDTO.goodsId" />
+                            <v-text-field name="description" label="描述" counter="30" v-model="carouselSaveDTO.description" />
+                            <v-text-field name="subDescription" label="副描述" counter="30" v-model="carouselSaveDTO.subDescription" />
                             <div class="text-end">
                                 <v-btn class="text-end" type="submit" color="primary">添加</v-btn>
                             </div>

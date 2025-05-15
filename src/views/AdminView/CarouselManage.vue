@@ -6,7 +6,6 @@
     import LoadingDialog from '@/components/Dialog/LoadingDialog.vue';
     import WarningDialog from '@/components/Dialog/WarningDialog.vue';
     import type { Goods } from '@/entities/Goods';
-    import { nonull } from '@/utils/formRules'
     import type { Page } from '@/models/Page';
     import CarouselAlterDialog from '@/components/AdminView/CarouselAlterDialog.vue';
     import type { CarouselSaveDTO } from '@/entities/dto/CarouselSaveDTO';
@@ -48,7 +47,7 @@
             .finally(() => isSubmitting.value = false)
     }
 
-    async function add(data: any) {
+    async function save(data: CarouselSaveDTO) {
         console.log(data)
         isSubmitting.value = true
         await saveCarousel(data)
@@ -74,7 +73,7 @@
             <!-- 添加按钮 -->
             <v-btn class="me-3" color="primary" prepend-icon="mdi-plus" variant="flat" size="large" rounded>
                 添加
-                <carousel-alter-dialog :goodsList="goodsList" @submit="add"></carousel-alter-dialog>
+                <carousel-alter-dialog :goodsList="goodsList" @submit="save"></carousel-alter-dialog>
             </v-btn>
         </div>
         <v-list class="px-4 py-2 h-100">
@@ -122,13 +121,13 @@
                             <v-btn variant="text" icon="mdi-pencil" size="small">
                                 <i class="mdi-pencil mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
                                     aria-hidden="true" />
-                                <carousel-alter-dialog :goods-list="goodsList" :dto="{
+                                <carousel-alter-dialog :goods-list="goodsList" :dto="({
                                     id: item.id,
                                     goodsId: item.goodsId,
                                     title: item.title,
                                     description: item.description,
                                     subDescription: item.subDescription,
-                                } as CarouselSaveDTO"></carousel-alter-dialog>
+                                } as CarouselSaveDTO)" @submit="(data) => save(data)"></carousel-alter-dialog>
                             </v-btn>
                             <v-btn variant="text" icon="mdi-delete" size="small">
                                 <i class="mdi-delete mdi v-icon notranslate v-theme--lightTheme v-icon--size-default"
