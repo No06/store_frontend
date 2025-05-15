@@ -41,7 +41,7 @@ function imageAdd(url: string) {
     goods.value.photos?.push(goods_photo)
 }
 const mustSelectedRule = (value: GoodsCategory | null) => {
-    if (!value) return "不能为空"
+    if (!value || !value.name) return "不能为空"
     return true
 }
 // 提交更改
