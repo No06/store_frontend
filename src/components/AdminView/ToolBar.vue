@@ -53,11 +53,7 @@ function emitSearch() {
               discount: 0,
               stock: 0,
               description: '',
-              category: {
-				id: 0,
-				name: '',
-				description: ''
-			  },
+              category: {},
               photos: []
             }
           "

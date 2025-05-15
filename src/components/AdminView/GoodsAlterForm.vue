@@ -40,8 +40,8 @@ function imageAdd(url: string) {
     }
     goods.value.photos?.push(goods_photo)
 }
-const mustSelectedRule = (value: GoodsCategory | null) => {
-    if (!value || !value.name) return "不能为空"
+const mustSelectedRule = (value: string | null) => {
+    if (!value) return "不能为空"
     return true
 }
 // 提交更改
@@ -57,7 +57,7 @@ function submit() {
         <v-row>
             <!-- 信息 -->
             <v-col cols="12" sm="6" md="3">
-                <v-combobox label="类别" v-model="goods.category" :items="categorys" item-title="name" item-value="id"
+                <v-combobox label="类别" v-model="goods.category.name" :items="categorys" item-title="name" item-value="id"
                     :rules="[mustSelectedRule]" return-object @update:menu="console.log(goods.category)" />
             </v-col>
             <v-col cols="12" sm="6" md="6">
